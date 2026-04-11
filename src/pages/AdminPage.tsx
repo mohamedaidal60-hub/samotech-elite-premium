@@ -1,191 +1,311 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  Users, 
   ShieldAlert, 
-  Settings, 
-  Key, 
-  Plus, 
-  Check, 
-  X,
-  Lock,
-  MessageSquare
+  Users, 
+  MessageSquare, 
+  FileUp, 
+  Send,
+  UserPlus,
+  FileCheck,
+  FileX,
+  Plus,
+  MoreVertical,
+  Activity,
+  History,
+  FileText,
+  BadgeAlert
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 
 const AdminPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'users' | 'roles' | 'api'>('users');
-  const [users, setUsers] = useState([
-    { id: 1, name: 'Admin Principal', email: 'admin@growthpartners.com', role: 'admin', lastActive: '2h ago' },
-    { id: 2, name: 'Sarah Toumi', email: 's.toumi@growthpartners.com', role: 'supervisor', lastActive: '10m ago' },
-    { id: 3, name: 'Mehdi Ben', email: 'm.ben@growthpartners.com', role: 'teleoperator', lastActive: 'Now' },
-    { id: 4, name: 'Linda S.', email: 'l.s@growthpartners.com', role: 'quality_agent', lastActive: '1d ago' },
-  ]);
+  const { user } = useAuth();
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [documents, setDocuments] = useState<any[]>([]);
+  const [view, setView] = useState<'users' | 'communication' | 'vault'>('users');
+  const [newUser, setNewUser] = useState({ email: '', name: '', role: 'teleoperator' });
+  const [broadcast, setBroadcast] = useState('');
 
-  const [roles, setRoles] = useState([
-    { id: 1, name: 'Teleoperator', permissions: ['Make Calls', 'View Sales', 'Self Profile'] },
-    { id: 2, name: 'Supervisor', permissions: ['Make Calls', 'Validate Sales', 'View Team'] },
-    { id: 3, name: 'Quality Agent', permissions: ['View Recordings', 'Approve/Reject Sales', 'Export Reports'] },
-    { id: 4, name: 'Admin', permissions: ['All Access', 'User Management', 'Roles & API'] },
-  ]);
+  useEffect(() => {
+    const loadData = async () => {
+      const { data: p } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
+      setEmployees(p || []);
+      
+      const { data: d } = await supabase.from('documents').select('*, profiles(full_name)').order('created_at', { ascending: false });
+      setDocuments(d || []);
+    };
+    loadData();
+  }, []);
+
+  const handleCreateUser = async () => {
+    if (!newUser.email || !newUser.name) return alert("Veuillez remplir tous les champs");
+    // Note: This would normally use Auth API. Since we are in client, we just simulate profile creation or use an Edge Function.
+    alert("Simulation: Création du compte pour " + newUser.name + " (" + newUser.email + "). Un email de confirmation a été envoyé.");
+    setNewUser({ email: '', name: '', role: 'teleoperator' });
+  };
+
+  const handleSendBroadcast = () => {
+    if (!broadcast) return;
+    alert("Message diffusé à tous les collaborateurs de Growth Partners !");
+    setBroadcast('');
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1 style={{ fontSize: '24px' }}>Administration Système</h1>
-        <button className="btn-primary"><Plus size={18} /> Nouvel Utilisateur</button>
-      </div>
-
-      <div className="premium-card" style={{ padding: 0, overflow: 'hidden' }}>
-        <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', background: 'rgba(255,255,255,0.02)' }}>
-          <button 
-            onClick={() => setActiveTab('users')}
-            style={{ 
-              padding: '15px 25px', 
-              background: 'none', 
-              border: 'none', 
-              color: activeTab === 'users' ? 'white' : 'var(--text-dim)',
-              borderBottom: activeTab === 'users' ? '2px solid var(--accent-primary)' : 'none',
-              cursor: 'pointer',
-              fontWeight: activeTab === 'users' ? '600' : '400'
-            }}
-          >
-            Utilisateurs
-          </button>
-          <button 
-            onClick={() => setActiveTab('roles')}
-            style={{ 
-              padding: '15px 25px', 
-              background: 'none', 
-              border: 'none', 
-              color: activeTab === 'roles' ? 'white' : 'var(--text-dim)',
-              borderBottom: activeTab === 'roles' ? '2px solid var(--accent-primary)' : 'none',
-              cursor: 'pointer',
-              fontWeight: activeTab === 'roles' ? '600' : '400'
-            }}
-          >
-            Rôles & Permissions
-          </button>
-          <button 
-            onClick={() => setActiveTab('api')}
-            style={{ 
-              padding: '15px 25px', 
-              background: 'none', 
-              border: 'none', 
-              color: activeTab === 'api' ? 'white' : 'var(--text-dim)',
-              borderBottom: activeTab === 'api' ? '2px solid var(--accent-primary)' : 'none',
-              cursor: 'pointer',
-              fontWeight: activeTab === 'api' ? '600' : '400'
-            }}
-          >
-            Configuration API
-          </button>
+    <div className="space-y-8">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+            <ShieldAlert className="text-blue-500" />
+            Centre d'Administration Elite
+          </h1>
+          <p className="text-slate-400 text-sm mt-1">Contrôle global, gestion des droits et coffre-fort documentaire.</p>
         </div>
+        
+        <div className="flex bg-slate-900/50 p-1 rounded-2xl border border-slate-800">
+          {[
+            { id: 'users', label: 'Utilisateurs', icon: Users },
+            { id: 'communication', label: 'Communication', icon: MessageSquare },
+            { id: 'vault', label: 'Coffre-fort', icon: FileUp }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setView(tab.id as any)}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all font-bold text-xs uppercase tracking-widest ${view === tab.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-400 hover:text-white'}`}
+            >
+              <tab.icon size={16} />
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </header>
 
-        <div style={{ padding: '30px' }}>
-          {activeTab === 'users' && (
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ textAlign: 'left', borderBottom: '1px solid var(--border)', fontSize: '12px', color: 'var(--text-dim)' }}>
-                  <th style={{ paddingBottom: '15px' }}>NOM</th>
-                  <th style={{ paddingBottom: '15px' }}>EMAIL</th>
-                  <th style={{ paddingBottom: '15px' }}>RÔLE</th>
-                  <th style={{ paddingBottom: '15px' }}>DERNIÈRE ACTIVITÉ</th>
-                  <th style={{ paddingBottom: '15px' }}>ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map(u => (
-                  <tr key={u.id} style={{ borderBottom: '1px solid #1e2d42', fontSize: '14px' }}>
-                    <td style={{ padding: '15px 0', fontWeight: 'bold' }}>{u.name}</td>
-                    <td style={{ padding: '15px 0' }}>{u.email}</td>
-                    <td style={{ padding: '15px 0' }}>
-                       <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--accent-secondary)' }}>{u.role.replace('_', ' ')}</span>
-                    </td>
-                    <td style={{ padding: '15px 0', color: 'var(--text-dim)' }}>{u.lastActive}</td>
-                    <td style={{ padding: '15px 0' }}>
-                       <div style={{ display: 'flex', gap: '10px' }}>
-                          <button style={{ background: 'none', border: 'none', color: 'var(--accent-primary)', cursor: 'pointer' }}><Settings size={14} /></button>
-                          <button style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer' }}><Lock size={14} /></button>
-                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-
-          {activeTab === 'roles' && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-               {roles.map(r => (
-                 <div key={r.id} className="premium-card">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
-                       <h3 style={{ fontSize: '16px' }}>{r.name}</h3>
-                       <button style={{ background: 'none', border: 'none', color: 'var(--accent-primary)', cursor: 'pointer' }}>Modifier</button>
+      <main className="space-y-6">
+        <AnimatePresence mode="wait">
+          {view === 'users' ? (
+            <motion.div 
+              key="users"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              className="grid grid-cols-1 xl:grid-cols-3 gap-8"
+            >
+              <div className="xl:col-span-1 space-y-6">
+                <section className="glass-card p-8 border-slate-800 bg-blue-600/5">
+                  <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                    <UserPlus className="text-blue-500" />
+                    Créer un Profil
+                  </h3>
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-bold text-slate-500 uppercase">Nom Complet</label>
+                       <input 
+                         type="text" 
+                         value={newUser.name}
+                         onChange={(e) => setNewUser({...newUser, name: e.target.value})}
+                         className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white outline-none focus:border-blue-500" 
+                         placeholder="e.g. Samir Slimani"
+                       />
                     </div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                       {r.permissions.map((p, i) => (
-                         <span key={i} className="badge-blue" style={{ fontSize: '10px' }}>{p}</span>
-                       ))}
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-bold text-slate-500 uppercase">Email Corporate</label>
+                       <input 
+                         type="email" 
+                         value={newUser.email}
+                         onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                         className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white outline-none focus:border-blue-500" 
+                         placeholder="samir@growthpartners.dz"
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-bold text-slate-500 uppercase">Rôle & Accès</label>
+                       <select 
+                         value={newUser.role}
+                         onChange={(e) => setNewUser({...newUser, role: e.target.value})}
+                         className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white outline-none focus:border-blue-500 cursor-pointer"
+                       >
+                         <option value="teleoperator">Téléopérateur</option>
+                         <option value="supervisor">Superviseur</option>
+                         <option value="quality_agent">Qualité</option>
+                         <option value="trainer">Formateur</option>
+                         <option value="admin">Administrateur</option>
+                       </select>
+                    </div>
+                    <button onClick={handleCreateUser} className="w-full btn-primary justify-center py-4">CREER LE COMPTE</button>
+                    <p className="text-[10px] text-slate-600 italic text-center leading-relaxed">Le collaborateur recevra ses accès temporaires par email automatiquement.</p>
+                  </div>
+                </section>
+              </div>
+
+              <div className="xl:col-span-2 space-y-6">
+                <section className="glass-card border-slate-800 overflow-hidden">
+                  <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/40">
+                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                      <Users size={18} className="text-blue-500" />
+                      Collaborateurs Actifs
+                    </h2>
+                  </div>
+                  <div className="divide-y divide-slate-800/50">
+                    {employees.map((emp, i) => (
+                      <div key={i} className="p-4 flex items-center justify-between hover:bg-slate-800/20 transition-all cursor-pointer group">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center font-bold text-slate-400 group-hover:bg-blue-600/20 group-hover:text-blue-500 transition-colors">
+                            {emp.full_name?.charAt(0) || 'U'}
+                          </div>
+                          <div>
+                            <p className="font-bold text-white">{emp.full_name}</p>
+                            <p className="text-[10px] text-blue-400 uppercase tracking-widest leading-none mt-1">{emp.role}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-6">
+                           <div className="hidden md:block text-right">
+                              <p className="text-xs text-slate-500">{emp.email}</p>
+                              <p className="text-[10px] text-slate-600 mt-1">Dernière connexion: Hier 14:22</p>
+                           </div>
+                           <button className="p-2 text-slate-700 hover:text-white transition-colors">
+                              <MoreVertical size={20} />
+                           </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </div>
+            </motion.div>
+          ) : view === 'communication' ? (
+            <motion.div 
+               key="comm"
+               initial={{ opacity: 0, y: 10 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="max-w-4xl mx-auto space-y-8"
+            >
+              <section className="glass-card p-10 border-slate-800 space-y-8">
+                <div className="flex items-center gap-6">
+                   <div className="w-16 h-16 rounded-3xl bg-blue-600/10 flex items-center justify-center text-blue-500">
+                      <MessageSquare size={32} />
+                   </div>
+                   <div>
+                      <h2 className="text-2xl font-extrabold text-white">Broadcast Interne</h2>
+                      <p className="text-slate-500">Diffusez une annonce instantanée à tous les tableaux de bord.</p>
+                   </div>
+                </div>
+
+                <div className="space-y-4">
+                   <textarea 
+                     value={broadcast}
+                     onChange={(e) => setBroadcast(e.target.value)}
+                     className="w-full h-40 bg-slate-900 border border-slate-800 rounded-3xl p-6 text-white outline-none focus:border-blue-500 transition-all placeholder:text-slate-700 resize-none"
+                     placeholder="Ecrivez votre annonce ici..."
+                   ></textarea>
+                   <div className="flex justify-between items-center">
+                      <p className="text-[10px] text-slate-500 italic max-w-sm">Ce message apparaîtra en haut de chaque module utilisateur avec une notification push.</p>
+                      <button onClick={handleSendBroadcast} className="btn-primary">
+                         DIFFUSER L'ANNONCE
+                         <Send size={18} />
+                      </button>
+                   </div>
+                </div>
+              </section>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div className="glass-card p-6 border-slate-800 flex items-center gap-4 bg-emerald-500/5">
+                    <BadgeAlert className="text-emerald-500" />
+                    <div>
+                      <p className="text-sm font-bold text-white">Mode Urgence</p>
+                      <p className="text-[10px] text-slate-400 uppercase font-semibold">Desactiver temporairement tous les accès</p>
                     </div>
                  </div>
-               ))}
-            </div>
+                 <div className="glass-card p-6 border-slate-800 flex items-center gap-4 bg-amber-500/5">
+                    <History className="text-amber-500" />
+                    <div>
+                      <p className="text-sm font-bold text-white">Logs Système</p>
+                      <p className="text-[10px] text-slate-400 uppercase font-semibold">Dernière activité: Import Pointage API</p>
+                    </div>
+                 </div>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div 
+               key="vault"
+               initial={{ opacity: 0, scale: 0.98 }}
+               animate={{ opacity: 1, scale: 1 }}
+               className="space-y-8"
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                 <div className="lg:col-span-1 space-y-6">
+                    <section className="glass-card p-6 border-slate-800 space-y-6">
+                       <h3 className="font-bold text-white uppercase text-xs tracking-widest border-b border-slate-800 pb-3">Types de Documents</h3>
+                       <div className="space-y-2">
+                          {[
+                            { label: 'Attestations Travail', count: 12, icon: FileCheck, color: 'text-emerald-500' },
+                            { label: 'Titres de Congés', count: 4, icon: FileText, color: 'text-blue-500' },
+                            { label: 'Certificats Médicaux', count: 8, icon: History, color: 'text-rose-500' },
+                            { label: 'Contrats Signés', count: 142, icon: ShieldAlert, color: 'text-amber-500' }
+                          ].map((cat, i) => (
+                            <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-800/40 transition-all cursor-pointer">
+                               <div className="flex items-center gap-3">
+                                  <cat.icon size={16} className={cat.color} />
+                                  <span className="text-[11px] font-bold text-slate-300">{cat.label}</span>
+                               </div>
+                               <span className="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-bold">{cat.count}</span>
+                            </div>
+                          ))}
+                       </div>
+                    </section>
+                    <button className="w-full py-4 border-2 border-dashed border-slate-800 rounded-3xl text-slate-500 hover:text-blue-400 hover:border-blue-500/50 transition-all flex items-center justify-center gap-2 font-bold text-[10px] uppercase tracking-widest">
+                       <Plus size={20} />
+                       Déposer un Document
+                    </button>
+                 </div>
+
+                 <div className="lg:col-span-3">
+                    <div className="glass-card border-slate-800">
+                       <div className="p-6 border-b border-slate-800 bg-slate-900/40 flex items-center justify-between">
+                          <h2 className="text-lg font-bold text-white">Archives & Soumissions</h2>
+                          <div className="flex items-center gap-3 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+                             <Search size={14} className="ml-2 text-slate-500" />
+                             <input type="text" placeholder="Rechercher un document..." className="bg-transparent text-[11px] outline-none text-white w-48" />
+                          </div>
+                       </div>
+                       <div className="overflow-x-auto">
+                           <table className="w-full text-left">
+                              <thead>
+                                 <tr className="text-[10px] uppercase font-bold text-slate-600 bg-slate-900/60">
+                                    <th className="px-6 py-4">Nom du Fichier</th>
+                                    <th className="px-6 py-4">Date de Dépôt</th>
+                                    <th className="px-6 py-4">Propriétaire</th>
+                                    <th className="px-6 py-4">Type</th>
+                                    <th className="px-6 py-4 text-center">Actions</th>
+                                 </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-800/30">
+                                 {documents.length > 0 ? documents.map((doc, i) => (
+                                   <tr key={i} className="hover:bg-slate-800/20 group">
+                                      <td className="px-6 py-4 font-bold text-slate-200 text-sm">{doc.file_name}</td>
+                                      <td className="px-6 py-4 text-[11px] text-slate-500">{new Date(doc.created_at).toLocaleDateString()}</td>
+                                      <td className="px-6 py-4">
+                                         <span className="text-xs text-blue-400 font-bold">{doc.profiles?.full_name}</span>
+                                      </td>
+                                      <td className="px-6 py-4">
+                                         <span className="px-2 py-0.5 bg-slate-800 text-slate-400 rounded text-[9px] uppercase font-bold">{doc.type}</span>
+                                      </td>
+                                      <td className="px-6 py-4 text-center">
+                                         <button className="text-slate-500 hover:text-white transition-colors"><MoreVertical size={16} /></button>
+                                      </td>
+                                   </tr>
+                                 )) : (
+                                   <tr><td colSpan={5} className="p-10 text-center text-slate-700 italic font-bold">Le coffre-fort est vide</td></tr>
+                                 )}
+                              </tbody>
+                           </table>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+            </motion.div>
           )}
-
-          {activeTab === 'api' && (
-            <div style={{ maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-               <div style={{ padding: '20px', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.05)', border: '1px solid rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
-                  <ShieldAlert className="pulse" size={24} style={{ color: 'var(--accent-primary)' }} />
-                  <div>
-                    <h4 style={{ marginBottom: '5px' }}>Mode Super-Admin</h4>
-                    <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Ces paramètres contrôlent les intégrations globales du système (Supabase, Neon, OpenAI for transcription, etc.).</p>
-                  </div>
-               </div>
-
-               <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <label style={{ fontSize: '12px', color: 'var(--text-dim)' }}>NEON DATABASE URL</label>
-                    <div style={{ position: 'relative' }}>
-                       <Key style={{ position: 'absolute', left: '12px', top: '12px', color: 'var(--text-dim)' }} size={16} />
-                       <input type="password" value="postgresql://neondb_owner:************" className="input-field" style={{ paddingLeft: '40px' }} />
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <label style={{ fontSize: '12px', color: 'var(--text-dim)' }}>OPENAI API KEY (Audio Transcription)</label>
-                    <div style={{ position: 'relative' }}>
-                       <Key style={{ position: 'absolute', left: '12px', top: '12px', color: 'var(--text-dim)' }} size={16} />
-                       <input type="password" value="sk-***************" className="input-field" style={{ paddingLeft: '40px' }} />
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <label style={{ fontSize: '12px', color: 'var(--text-dim)' }}>GPTrans NETLIFY API</label>
-                    <div style={{ position: 'relative' }}>
-                       <Key style={{ position: 'absolute', left: '12px', top: '12px', color: 'var(--text-dim)' }} size={16} />
-                       <input type="password" value="***************" className="input-field" style={{ paddingLeft: '40px' }} />
-                    </div>
-                  </div>
-                  <button className="btn-primary" style={{ marginTop: '10px' }}>Enregistrer et Synchroniser</button>
-               </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="premium-card glass-morphism">
-        <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}><MessageSquare size={20} /> Chat Interne Admin</h3>
-        <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Messages entre administrateurs et superviseurs.</p>
-        <div style={{ marginTop: '15px', padding: '15px', background: 'var(--bg-main)', borderRadius: '12px', border: '1px solid var(--border)', fontSize: '13px' }}>
-           <div style={{ marginBottom: '10px' }}>
-             <strong style={{ color: 'var(--accent-primary)' }}>Admin:</strong> Bienvenue sur la version v2.1 de GROWTH PARTNERS ERP.
-           </div>
-           <div>
-             <strong style={{ color: 'var(--accent-secondary)' }}>Sarah Toumi:</strong> Merci, l'interface est superbe !
-           </div>
-        </div>
-        <div style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
-           <input type="text" className="input-field" placeholder="Votre message..." />
-           <button className="btn-primary">Envoyer</button>
-        </div>
-      </div>
+        </AnimatePresence>
+      </main>
     </div>
   );
 };

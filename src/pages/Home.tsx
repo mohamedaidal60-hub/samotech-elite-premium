@@ -1,129 +1,175 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { 
   Users, 
   TrendingUp, 
   PhoneCall, 
   Truck, 
-  CheckCircle2, 
+  ShieldCheck, 
+  Activity,
+  ArrowUpRight,
   Clock,
-  Circle
+  Briefcase
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useAuth } from '../contexts/AuthContext';
 
-const Dashboard: React.FC = () => {
-  const kpis = [
-    { label: 'Effectif Total', value: '124', sub: '+4 ce mois', icon: Users, color: '#3b82f6' },
-    { label: 'Ventes du jour', value: '18', sub: 'Objectif: 25', icon: TrendingUp, color: '#10b981' },
-    { label: 'Appels en cours', value: '42', sub: '95% de productivité', icon: PhoneCall, color: '#06b6d4' },
-    { label: 'Véhicules actifs', value: '8/12', sub: '2 en maintenance', icon: Truck, color: '#f59e0b' },
-  ];
+const Home: React.FC = () => {
+  const { user } = useAuth();
 
-  const recentSales = [
-    { agent: 'Sarah Toumi', client: 'Orange FR', time: '14:20', status: 'validated' },
-    { agent: 'Mehdi Ben', client: 'EDF GDF', time: '14:15', status: 'pending' },
-    { agent: 'Yassine K.', client: 'SFR Pro', time: '13:55', status: 'validated' },
-    { agent: 'Linda S.', client: 'Canal+', time: '13:40', status: 'validated' },
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
+  const stats = [
+    { label: 'Effectif Total', value: '142', icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+    { label: 'Production / Jour', value: '2.8k', icon: PhoneCall, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+    { label: 'Taux Qualité', value: '96.4%', icon: ShieldCheck, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+    { label: 'Flotte Active', value: '18', icon: Truck, color: 'text-amber-500', bg: 'bg-amber-500/10' },
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+    <motion.div 
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="space-y-10"
+    >
+      {/* Welcome Section */}
+      <section className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2 border-b border-slate-800/50">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white">
+            Bonjour, <span className="premium-gradient-text">{user?.name}</span>
+          </h1>
+          <p className="text-slate-400 mt-2 flex items-center gap-2">
+            <Activity size={16} className="text-blue-500" />
+            Voici l'état actuel de Growth Partners Call Centers.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="glass-card px-4 py-2 flex items-center gap-2 border-slate-800">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-bold text-slate-300 uppercase tracking-widest">Système Opérationnel</span>
+          </div>
+        </div>
+      </section>
+
       {/* KPI Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
-        {kpis.map((kpi, index) => (
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, idx) => (
           <motion.div 
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="premium-card"
-            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}
+            key={idx}
+            variants={item}
+            className="glass-card p-6 border-slate-800/50 hover:border-slate-700 transition-all group group-stat"
           >
-            <div>
-              <p style={{ color: 'var(--text-muted)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
-                {kpi.label}
-              </p>
-              <h3 style={{ fontSize: '28px', color: 'white' }}>{kpi.value}</h3>
-              <p style={{ color: 'var(--text-dim)', fontSize: '12px', marginTop: '4px' }}>{kpi.sub}</p>
+            <div className="flex justify-between items-start mb-4">
+              <div className={`p-3 rounded-2xl ${stat.bg} ${stat.color} transition-transform group-hover:scale-110`}>
+                <stat.icon size={24} />
+              </div>
+              <span className="text-slate-500 hover:text-white cursor-pointer transition-colors">
+                <ArrowUpRight size={18} />
+              </span>
             </div>
-            <div style={{ padding: '10px', borderRadius: '12px', backgroundColor: `${kpi.color}15`, color: kpi.color }}>
-              <kpi.icon size={24} />
+            <div>
+              <p className="text-slate-500 text-sm font-medium uppercase tracking-wider">{stat.label}</p>
+              <h3 className="text-3xl font-bold mt-1 text-white">{stat.value}</h3>
             </div>
           </motion.div>
         ))}
-      </div>
+      </section>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
-        {/* Real-time Status */}
-        <div className="premium-card glass-morphism">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Clock size={20} className="pulse" style={{ color: 'var(--accent-secondary)' }} />
-              Activités en Direct
-            </h3>
-            <button className="small" style={{ fontSize: '12px', color: 'var(--accent-primary)', background: 'none', border: 'none', cursor: 'pointer' }}>Voir tout</button>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main Feed */}
+        <section className="lg:col-span-2 space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <Activity className="text-blue-500" size={20} />
+              Activités de Production
+            </h2>
+            <button className="text-sm text-blue-400 hover:text-blue-300 transition-colors">Voir tout</button>
           </div>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            {recentSales.map((sale, i) => (
-              <div key={i} style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between',
-                padding: '12px',
-                borderRadius: '12px',
-                background: 'rgba(255,255,255,0.02)'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                   <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: sale.status === 'validated' ? 'var(--success)' : 'var(--warning)' }} />
-                   <div>
-                     <div style={{ fontWeight: '600', fontSize: '14px' }}>{sale.agent}</div>
-                     <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Vente: {sale.client}</div>
-                   </div>
+          <div className="space-y-4">
+            {[1, 2, 3].map((_, i) => (
+              <motion.div 
+                key={i}
+                variants={item}
+                className="glass-card p-5 border-slate-800/30 flex items-center gap-4 hover:bg-slate-800/20 transition-all"
+              >
+                <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
+                  <PhoneCall size={20} className="text-blue-400" />
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '12px', color: 'var(--text-dim)' }}>{sale.time}</div>
-                  <div className={`badge ${sale.status === 'validated' ? 'badge-success' : 'badge-error'}`} style={{ marginTop: '4px' }}>
-                    {sale.status === 'validated' ? 'Confirmé' : 'En attente'}
-                  </div>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-white">Vente Enregistrée — Campagne Telecom</p>
+                  <p className="text-xs text-slate-500 mt-1">Par Agent: Sarah L. • ID Appel: #8291</p>
                 </div>
-              </div>
+                <div className="text-right">
+                  <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-1 rounded-full font-bold uppercase">En Vérification</span>
+                  <p className="text-[10px] text-slate-600 mt-2">Il y a 2 min</p>
+                </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Presence / Logistics Quick View */}
-        <div className="premium-card">
-          <h3 style={{ marginBottom: '20px' }}>Logistique</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px' }}>
-                <span>Taux de présence</span>
-                <span>92%</span>
+        {/* Info Cards */}
+        <section className="space-y-6">
+          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <Clock className="text-cyan-500" size={20} />
+            Pointage Aujourd'hui
+          </h2>
+          <div className="glass-card p-6 border-slate-800/50 space-y-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-2xl font-bold text-white">92%</p>
+                <p className="text-xs text-slate-500 uppercase font-semibold">Présence</p>
               </div>
-              <div style={{ height: '6px', width: '100%', backgroundColor: 'var(--border)', borderRadius: '3px', overflow: 'hidden' }}>
-                <div style={{ height: '100%', width: '92%', backgroundColor: 'var(--success)' }} />
+              <div className="w-12 h-12 rounded-full border-4 border-slate-800 border-t-cyan-500 flex items-center justify-center">
+                <Users size={18} className="text-cyan-500" />
               </div>
             </div>
             
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px' }}>
-                <span>Véhicules en route</span>
-                <span>8/12</span>
+            <div className="space-y-3">
+              <div className="flex justify-between text-xs">
+                <span className="text-slate-400">Présents</span>
+                <span className="text-white font-bold">131</span>
               </div>
-              <div style={{ height: '6px', width: '100%', backgroundColor: 'var(--border)', borderRadius: '3px', overflow: 'hidden' }}>
-                <div style={{ height: '100%', width: '66%', backgroundColor: 'var(--accent-primary)' }} />
+              <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div className="bg-cyan-500 h-full w-[92%] rounded-full shadow-[0_0_10px_rgba(6,182,212,0.4)]" />
+              </div>
+              <div className="flex justify-between text-xs pt-1">
+                <span className="text-slate-400">Retards</span>
+                <span className="text-amber-500 font-bold">8</span>
               </div>
             </div>
 
-            <div style={{ marginTop: '10px', padding: '15px', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.05)', border: '1px dashed var(--accent-primary)' }}>
-              <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '5px' }}>Notifications</p>
-              <p style={{ fontSize: '13px' }}>2 nouveaux certificats médicaux à valider.</p>
-            </div>
+            <button className="w-full py-3 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-sm font-bold text-white transition-all border border-slate-700/50">
+              Accéder au module Pointage
+            </button>
           </div>
-        </div>
+
+          <div className="glass-card p-6 border-slate-800 bg-gradient-to-br from-blue-600/10 to-transparent">
+            <Briefcase className="text-blue-400 mb-4" size={24} />
+            <h3 className="text-white font-bold mb-2">Centre d'aide Administration</h3>
+            <p className="text-xs text-slate-400 leading-relaxed mb-4">
+              Accédez aux documents officiels, certificats de travail et titres de congés directement dans votre espace Admin.
+            </p>
+            <button className="text-xs font-bold text-blue-400 hover:text-blue-300">Démarrer le chat interne →</button>
+          </div>
+        </section>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
-export default Dashboard;
+export default Home;

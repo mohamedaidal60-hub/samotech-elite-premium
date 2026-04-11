@@ -9,9 +9,17 @@ import ProductionPage from './pages/ProductionPage';
 import LogisticsPage from './pages/LogisticsPage';
 import QualityPage from './pages/QualityPage';
 import AdminPage from './pages/AdminPage';
+import SettingsPage from './pages/SettingsPage';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
+  
+  if (isLoading) return (
+    <div className="min-h-screen bg-[#06090f] flex items-center justify-center">
+      <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
   if (!user) return <Navigate to="/login" replace />;
   return <Layout>{children}</Layout>;
 };
@@ -28,6 +36,7 @@ function App() {
           <Route path="/production" element={<ProtectedRoute><ProductionPage /></ProtectedRoute>} />
           <Route path="/logistics" element={<ProtectedRoute><LogisticsPage /></ProtectedRoute>} />
           <Route path="/quality" element={<ProtectedRoute><QualityPage /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
