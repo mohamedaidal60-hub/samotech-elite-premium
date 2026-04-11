@@ -43,13 +43,13 @@ const LogisticsPage: React.FC = () => {
       const { data: v } = await supabase.from('vehicles').select('*');
       setVehicles(v || []);
 
-      const { data: p } = await supabase.from('gps_positions').select('*').order('updated_at', { ascending: false });
+      const { data: p } = await supabase.from('positions_gps').select('*').order('updated_at', { ascending: false });
       setPositions(p || []);
     };
     fetchData();
 
     const channel = supabase.channel('gps-live')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'gps_positions' }, (payload) => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'positions_gps' }, (payload) => {
         setPositions(prev => [payload.new, ...prev.filter(p => p.driver_id !== payload.new.driver_id)]);
       })
       .subscribe();

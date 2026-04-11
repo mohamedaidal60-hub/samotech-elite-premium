@@ -21,7 +21,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (session) {
         const { data: profile } = await supabase
-          .from('profiles')
+          .from('agents')
           .select('*')
           .eq('id', session.user.id)
           .single();
@@ -30,7 +30,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser({
             id: profile.id,
             email: profile.email,
-            name: profile.full_name || 'User',
+            name: profile.nom || 'User',
             role: profile.role as Role
           });
         }
@@ -47,7 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
         const { data: profile } = await supabase
-          .from('profiles')
+          .from('agents')
           .select('*')
           .eq('id', session.user.id)
           .single();
@@ -56,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser({
             id: profile.id,
             email: profile.email,
-            name: profile.full_name || 'User',
+            name: profile.nom || 'User',
             role: profile.role as Role
           });
         }
@@ -75,7 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // 1. Check Super Admin Hardcoded
       if (email === 'aidalmimo@gmail.com' && pass === '@sba-Trs40') {
         const superUser: User = {
-          id: 'super-admin-id',
+          id: '00000000-0000-4000-a000-000000000000',
           email,
           name: 'Directeur Général',
           role: 'super_admin'

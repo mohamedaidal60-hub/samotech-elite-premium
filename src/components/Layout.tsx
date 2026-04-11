@@ -13,7 +13,8 @@ import {
   X,
   User as UserIcon,
   Bell,
-  Search
+  Search,
+  MapPin
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -36,6 +37,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     { name: 'Production', icon: PhoneCall, path: '/production', roles: ['super_admin', 'admin', 'teleoperator', 'supervisor', 'production_director'] },
     { name: 'Logistique', icon: Truck, path: '/logistics', roles: ['super_admin', 'admin', 'driver', 'sector_manager'] },
     { name: 'Qualité', icon: ShieldCheck, path: '/quality', roles: ['super_admin', 'admin', 'quality_agent'] },
+    { name: 'Portail Agent', icon: UserIcon, path: '/agent' },
+    { name: 'Portail Driver', icon: MapPin, path: '/driver' },
   ];
 
   const filteredNav = navItems.filter(item => 

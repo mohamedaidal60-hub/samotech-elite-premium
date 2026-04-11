@@ -4,56 +4,60 @@ import {
   Clock, 
   Calendar, 
   Search, 
-  Filter, 
   Plus, 
   Download,
-  AlertCircle,
+  Settings,
+  Info,
   CheckCircle,
-  ExternalLink,
-  Settings
+  XCircle,
+  AlertCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 
 const HRPage: React.FC = () => {
-  const [employees, setEmployees] = useState<any[]>([]);
-  const [attendance, setAttendance] = useState<any[]>([]);
-  const [view, setView] = useState<'roster' | 'attendance' | 'settings'>('attendance');
+  const [agents, setAgents] = useState<any[]>([]);
+  const [absences, setAbsences] = useState<any[]>([]);
+  const [view, setView] = useState<'roster' | 'absences' | 'settings'>('absences');
   const [presenceApi, setPresenceApi] = useState('https://api.presencesheque.com/v1');
-  const [apiKey, setApiKey] = useState('************************');
 
   useEffect(() => {
     const loadData = async () => {
-      const { data: p } = await supabase.from('profiles').select('*');
-      setEmployees(p || []);
+      const { data: p } = await supabase.from('agents').select('*').order('nom');
+      setAgents(p || []);
       
-      const { data: a } = await supabase.from('attendance').select('*, profiles(full_name)').order('check_in', { ascending: false });
-      setAttendance(a || []);
+      const { data: a } = await supabase.from('absences').select('*').order('date_debut', { ascending: false });
+      setAbsences(a || []);
     };
     loadData();
   }, []);
 
+  const handleValidate = async (id: number) => {
+    await supabase.from('absences').update({ valide: true }).eq('id', id);
+    setAbsences(absences.map(a => a.id === id ? { ...a, valide: true } : a));
+  };
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 font-['Outfit']">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2 border-b border-slate-800/50">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <h1 className="text-2xl font-black text-white flex items-center gap-3">
             <Users className="text-blue-500" />
-            Gestion RH & Pointage
+            Gestion Ressources Humaines
           </h1>
-          <p className="text-slate-400 text-sm mt-1">Supervision des effectifs, assiduité et synchronisation Presence Sheque.</p>
+          <p className="text-slate-400 text-sm mt-1 font-medium">Supervision des effectifs et planning des absences (GPTrans Sync).</p>
         </div>
         
         <div className="flex bg-slate-900/50 p-1 rounded-2xl border border-slate-800">
           {[
-            { id: 'attendance', label: 'Pointage Live', icon: Clock },
+            { id: 'absences', label: 'Absences', icon: Calendar },
             { id: 'roster', label: 'Effectif', icon: Users },
-            { id: 'settings', label: 'APIs Presence', icon: Settings }
+            { id: 'settings', label: 'Config Presence', icon: Settings }
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setView(tab.id as any)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all font-bold text-xs uppercase tracking-widest ${view === tab.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-400 hover:text-white'}`}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all font-bold text-[10px] uppercase tracking-widest ${view === tab.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500 hover:text-white'}`}
             >
               <tab.icon size={16} />
               {tab.label}
@@ -62,81 +66,87 @@ const HRPage: React.FC = () => {
         </div>
       </header>
 
-      <main className="space-y-6">
+      <main>
         <AnimatePresence mode="wait">
-          {view === 'attendance' ? (
+          {view === 'absences' ? (
             <motion.div 
-              key="attendance"
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
+              key="absences"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 {[
-                  { label: 'Présents', count: '131', sub: 'Sur 142 totaux', color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-                  { label: 'Retards', count: '8', sub: 'Moyenne < 15min', color: 'text-amber-500', bg: 'bg-amber-500/10' },
-                  { label: 'Absences', count: '3', sub: 'Non justifiées', color: 'text-rose-500', bg: 'bg-rose-500/10' },
-                  { label: 'Taux Présence', count: '92.3%', sub: 'Semaine en cours', color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                  { label: 'Absents (Aujourd\'hui)', count: absences.filter(a => {
+                    const t = new Date().toISOString().split('T')[0];
+                    return a.date_debut <= t && a.date_fin >= t;
+                  }).length, color: 'text-rose-500' },
+                  { label: 'Total Agents', count: agents.length, color: 'text-blue-500' },
+                  { label: 'En attente', count: absences.filter(a => !a.valide).length, color: 'text-amber-500' },
+                  { label: 'Taux de force', count: '94%', color: 'text-emerald-500' },
                 ].map((kpi, idx) => (
-                  <div key={idx} className="glass-card p-6 border-slate-800">
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">{kpi.label}</p>
-                    <h3 className={`text-2xl font-extrabold ${kpi.color}`}>{kpi.count}</h3>
-                    <p className="text-[10px] text-slate-500 mt-2">{kpi.sub}</p>
+                  <div key={idx} className="glass-card p-6 border-slate-800/50">
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{kpi.label}</p>
+                    <h3 className={`text-3xl font-black ${kpi.color}`}>{kpi.count}</h3>
                   </div>
                 ))}
               </div>
 
-              <div className="glass-card border-slate-800 overflow-hidden">
-                <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/40">
-                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+              <div className="glass-card border-slate-800 overflow-hidden shadow-2xl">
+                <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-950/40">
+                  <h2 className="text-lg font-black text-white flex items-center gap-2">
                     <Calendar size={18} className="text-blue-500" />
-                    Pointages du Jour — {new Date().toLocaleDateString('fr-FR')}
+                    Planning des Absences
                   </h2>
-                  <button className="flex items-center gap-2 text-xs font-bold text-blue-400 hover:text-blue-300">
-                    <Download size={16} /> EXPORT EXCEL
+                  <button className="flex items-center gap-2 text-[10px] font-black text-blue-400 hover:text-blue-300 uppercase tracking-widest">
+                    <Download size={16} /> EXPORT ANALYTIQUE
                   </button>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
+                  <table className="w-full text-left">
                     <thead>
-                      <tr className="bg-slate-900/60 text-slate-500 text-[10px] uppercase tracking-[0.1em] font-bold">
-                        <th className="px-6 py-4">Collaborateur</th>
-                        <th className="px-6 py-4">Arrivée</th>
-                        <th className="px-6 py-4">Sortie</th>
-                        <th className="px-6 py-4">Statut</th>
-                        <th className="px-6 py-4">Source PresenceSheque</th>
+                      <tr className="bg-slate-900/60 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black">
+                        <th className="px-8 py-5">Collaborateur</th>
+                        <th className="px-8 py-5">Période</th>
+                        <th className="px-8 py-5">Motif</th>
+                        <th className="px-8 py-5">Origine</th>
+                        <th className="px-8 py-5 text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="text-sm divide-y divide-slate-800/50">
-                      {attendance.length > 0 ? attendance.map((rec, i) => (
-                        <tr key={i} className="hover:bg-slate-800/30 transition-colors">
-                          <td className="px-6 py-4 flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-slate-700 to-slate-800 flex items-center justify-center font-bold text-xs">
-                              {rec.profiles?.full_name?.charAt(0) || 'U'}
+                    <tbody className="divide-y divide-slate-800/50">
+                      {absences.map((abs, i) => (
+                        <tr key={i} className="hover:bg-slate-800/20 transition-all group">
+                          <td className="px-8 py-5 flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center font-black text-slate-500 group-hover:bg-blue-600/20 group-hover:text-blue-500 transition-all uppercase text-xs">
+                              {abs.agent_nom.charAt(0)}
                             </div>
-                            <span className="font-bold text-white">{rec.profiles?.full_name}</span>
+                            <span className="font-black text-white uppercase text-sm">{abs.agent_nom}</span>
                           </td>
-                          <td className="px-6 py-4 text-slate-300 font-medium">
-                            {new Date(rec.check_in).toLocaleTimeString()}
+                          <td className="px-8 py-5">
+                             <div className="flex flex-col">
+                                <span className="text-xs font-black text-slate-200">Du {abs.date_debut}</span>
+                                <span className="text-[10px] font-bold text-slate-500">Au {abs.date_fin}</span>
+                             </div>
                           </td>
-                          <td className="px-6 py-4 text-slate-500">
-                            {rec.check_out ? new Date(rec.check_out).toLocaleTimeString() : '—'}
+                          <td className="px-8 py-5 text-xs text-slate-400 font-medium italic">
+                             {abs.motif || '—'}
                           </td>
-                          <td className="px-6 py-4">
-                            <span className={`px-2 py-1 rounded-md text-[10px] font-extrabold uppercase ${rec.status === 'present' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'}`}>
-                              {rec.status === 'late' ? 'Retard' : 'Présent'}
-                            </span>
+                          <td className="px-8 py-5">
+                             <span className={`px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-widest ${abs.cree_par === 'admin' ? 'bg-blue-500/10 text-blue-500' : 'bg-slate-800 text-slate-400'}`}>
+                                {abs.cree_par}
+                             </span>
                           </td>
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-2 text-slate-500 text-xs bg-slate-800/30 px-2 py-1 rounded w-fit">
-                              <ExternalLink size={12} /> Sync: Auto
-                            </div>
+                          <td className="px-8 py-5 text-right">
+                             {!abs.valide ? (
+                               <button onClick={() => handleValidate(abs.id)} className="p-2 text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-all">
+                                  <CheckCircle size={20} />
+                               </button>
+                             ) : (
+                               <span className="text-emerald-500"><CheckCircle size={20} className="inline opacity-50" /></span>
+                             )}
                           </td>
                         </tr>
-                      )) : (
-                        <tr><td colSpan={5} className="p-10 text-center text-slate-600 font-bold italic">Aucun pointage aujourd'hui</td></tr>
-                      )}
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -147,23 +157,33 @@ const HRPage: React.FC = () => {
                key="roster"
                initial={{ opacity: 0, y: 10 }}
                animate={{ opacity: 1, y: 0 }}
-               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
             >
-              {employees.map((emp, i) => (
-                <div key={i} className="glass-card p-6 border-slate-800 group hover:border-blue-700 transition-all flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-xl font-bold text-white shadow-xl shadow-blue-500/10">
-                    {emp.full_name?.charAt(0)}
+              {agents.map((agent, i) => (
+                <div key={i} className="glass-card p-8 border-slate-800/50 group hover:border-blue-500/40 transition-all flex flex-col gap-6 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-4">
+                     <span className="px-2 py-1 bg-slate-900 border border-slate-800 rounded text-[8px] font-black text-slate-600 uppercase tracking-widest">#{agent.code_pin}</span>
                   </div>
-                  <div>
-                    <h3 className="text-white font-extrabold">{emp.full_name}</h3>
-                    <p className="text-blue-400 text-[10px] uppercase font-bold tracking-widest">{emp.role}</p>
-                    <p className="text-slate-500 text-xs mt-1">{emp.email}</p>
+                  <div className="flex items-center gap-6">
+                    <div className="w-16 h-16 rounded-3xl bg-slate-900 flex items-center justify-center text-xl font-black text-slate-500 group-hover:bg-blue-600/10 group-hover:text-blue-500 transition-all border border-slate-800 uppercase">
+                      {agent.nom.charAt(0)}
+                    </div>
+                    <div>
+                      <h3 className="text-white font-black uppercase text-sm tracking-tight">{agent.nom}</h3>
+                      <p className="text-blue-400 text-[10px] uppercase font-black tracking-[0.2em] mt-1">{agent.role}</p>
+                    </div>
+                  </div>
+                  <div className="pt-6 border-t border-slate-800 flex justify-between items-center text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                     <span>Accès Portail OK</span>
+                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
                   </div>
                 </div>
               ))}
-              <button className="glass-card p-6 border-dashed border-slate-700 flex flex-col items-center justify-center gap-3 text-slate-500 hover:text-blue-400 hover:border-blue-500/50 transition-all">
-                <Plus size={32} />
-                <span className="font-bold text-xs uppercase tracking-widest">Nouveau Profil</span>
+              <button className="glass-card p-8 border-dashed border-slate-700/50 flex flex-col items-center justify-center gap-4 text-slate-600 hover:text-blue-400 hover:border-blue-500/30 transition-all group">
+                <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center group-hover:bg-blue-600/10 transition-all">
+                   <Plus size={24} />
+                </div>
+                <span className="font-black text-[10px] uppercase tracking-[0.3em]">Ajouter Agent</span>
               </button>
             </motion.div>
           ) : (
@@ -171,43 +191,36 @@ const HRPage: React.FC = () => {
                key="settings"
                initial={{ opacity: 0 }}
                animate={{ opacity: 1 }}
-               className="max-w-2xl mx-auto space-y-8 py-10"
+               className="max-w-xl mx-auto space-y-8 py-10"
             >
-              <div className="glass-card p-10 border-slate-800 space-y-8 bg-blue-600/5">
-                <div className="text-center space-y-2">
-                  <h2 className="text-2xl font-extrabold text-white">Config Presence Sheque</h2>
-                  <p className="text-slate-500 text-sm">Liez vos pointeuses biométriques via API Rest.</p>
+              <div className="glass-card p-10 border-slate-800 space-y-10 bg-blue-600/5">
+                <div className="text-center space-y-3">
+                  <div className="w-20 h-20 mx-auto rounded-3xl bg-blue-600/10 flex items-center justify-center text-blue-500 mb-6">
+                     <Settings size={40} />
+                  </div>
+                  <h2 className="text-2xl font-black text-white uppercase tracking-tight">Synchronisation API</h2>
+                  <p className="text-slate-500 text-sm font-medium">Liez vos pointeuses externes via API Presence Sheque.</p>
                 </div>
                 
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">URL EndPoint API</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">URL Endpoint Presence</label>
                     <input 
                       type="text" 
                       value={presenceApi}
                       onChange={(e) => setPresenceApi(e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white outline-none focus:border-blue-500" 
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Clé d'API (Secret Key)</label>
-                    <input 
-                      type="password" 
-                      value={apiKey}
-                      onChange={(e) => setApiKey(e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white outline-none focus:border-blue-500" 
+                      className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-6 py-4 text-white outline-none focus:border-blue-500 font-bold" 
                     />
                   </div>
                   
-                  <div className="flex gap-4 p-4 bg-blue-500/10 rounded-xl border border-blue-500/20 items-start">
+                  <div className="flex gap-4 p-5 bg-blue-500/10 rounded-[24px] border border-blue-500/20 items-start">
                     <Info className="text-blue-500 shrink-0" size={20} />
-                    <p className="text-[11px] text-blue-300 leading-relaxed italic">
-                      Les logs de synchronisation indiquent que le dernier scan a été effectué il y a 8 minutes. 
-                      Tous les pointages sont automatiquement réconciliés avec les profils employés Supabase.
+                    <p className="text-[11px] text-blue-300 leading-relaxed font-medium italic">
+                      Les absences déclarées ici sont synchronisées en temps réel avec l'application Driver de GPTrans.
                     </p>
                   </div>
 
-                  <button className="w-full btn-primary justify-center py-4">TESTER & VALIDER LA CONNEXION</button>
+                  <button className="w-full btn-primary justify-center py-5 font-black text-xs tracking-[0.3em]">TESTER LA CONNEXION</button>
                 </div>
               </div>
             </motion.div>

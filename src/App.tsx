@@ -10,6 +10,8 @@ import LogisticsPage from './pages/LogisticsPage';
 import QualityPage from './pages/QualityPage';
 import AdminPage from './pages/AdminPage';
 import SettingsPage from './pages/SettingsPage';
+import AgentPortal from './pages/AgentPortal';
+import DriverPortal from './pages/DriverPortal';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, isLoading } = useAuth();
@@ -30,6 +32,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/agent" element={<AgentPortal />} />
+          <Route path="/driver" element={<DriverPortal />} />
+          
           <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
           <Route path="/hr" element={<ProtectedRoute><HRPage /></ProtectedRoute>} />
@@ -37,6 +42,7 @@ function App() {
           <Route path="/logistics" element={<ProtectedRoute><LogisticsPage /></ProtectedRoute>} />
           <Route path="/quality" element={<ProtectedRoute><QualityPage /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+          
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
