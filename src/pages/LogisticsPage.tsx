@@ -363,14 +363,48 @@ const LogisticsPage: React.FC = () => {
 
           {activeTab === 'map' && (
              <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="h-[70vh] bg-[#0d121c] rounded-3xl border border-slate-800 overflow-hidden relative shadow-2xl">
-                <div className="absolute inset-0 bg-blue-900/10 flex items-center justify-center">
-                   <div className="text-center space-y-4">
-                      <MapIcon className="mx-auto text-blue-500 opacity-20" size={64} />
-                      <p className="text-slate-500 uppercase font-black text-xs tracking-widest">Connectez vos balises GPS pour le Live Tracking</p>
-                      <button className="px-6 py-2 bg-blue-600/10 text-blue-500 border border-blue-500/20 rounded-xl text-[10px] font-black tracking-widest">CONFIGURER LES RADARS</button>
+                <div className="absolute top-4 left-4 z-10 space-y-2">
+                   <div className="bg-slate-900/80 backdrop-blur px-4 py-2 rounded-xl border border-white/5 text-[10px] font-black text-emerald-500 uppercase flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Radar Actif
                    </div>
                 </div>
+                {/* Integration Leaflet (Live Tracking) */}
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d102432.84439198642!2d3.0588!3d36.7538!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sfr!2sdz!4v1700000000000!5m2!1sfr!2sdz" 
+                  className="w-full h-full grayscale invert hue-rotate-180 brightness-50 contrast-100"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                />
+                <div className="absolute bottom-6 right-6 p-4 bg-slate-900/90 border border-slate-800 rounded-2xl flex items-center gap-4">
+                   <div className="flex -space-x-3">
+                      {[1, 2, 3].map(n => <div key={n} className="w-8 h-8 rounded-full border-2 border-slate-900 bg-blue-600 flex items-center justify-center text-[10px] font-black">CH</div>)}
+                   </div>
+                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">3 Chauffeurs en ligne</span>
+                </div>
              </motion.div>
+          )}
+
+          {activeTab === 'zones' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+               {['Centre-Ville', 'Zone Nord', 'Zone Sud', 'Zone Est', 'Zone Ouest'].map((zone) => (
+                 <div key={zone} className="bg-[#0d121c] p-8 rounded-[32px] border border-slate-800 group hover:border-blue-500/30 transition-all">
+                    <div className="flex justify-between items-start mb-6">
+                       <MapPin className="text-blue-500" size={24} />
+                       <button onClick={() => alert("Paramètres de Zone: " + zone)} className="p-2 bg-slate-950 rounded-lg text-slate-600 hover:text-white transition-all"><Settings size={16} /></button>
+                    </div>
+                    <h3 className="text-lg font-black text-white uppercase tracking-tight">{zone}</h3>
+                    <div className="mt-4 flex gap-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                       <span>4 Agents</span>
+                       <span>2 Navettes</span>
+                    </div>
+                 </div>
+               ))}
+               <button className="bg-[#0d121c] border-2 border-dashed border-slate-800 rounded-[32px] p-8 flex flex-col items-center justify-center gap-4 text-slate-600 hover:text-blue-500 transition-all">
+                  <Plus size={32} />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Nouvelle Zone</span>
+               </button>
+            </motion.div>
           )}
         </AnimatePresence>
       </main>

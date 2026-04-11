@@ -12,9 +12,11 @@ import {
   Briefcase
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Home: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const container = {
     hidden: { opacity: 0 },
@@ -32,10 +34,10 @@ const Home: React.FC = () => {
   };
 
   const stats = [
-    { label: 'Effectif Total', value: '142', icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-    { label: 'Production / Jour', value: '2.8k', icon: PhoneCall, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-    { label: 'Taux Qualité', value: '96.4%', icon: ShieldCheck, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-    { label: 'Flotte Active', value: '18', icon: Truck, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+    { label: 'Effectif Total', value: '142', icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10', path: '/admin' },
+    { label: 'Production / Jour', value: '2.8k', icon: PhoneCall, color: 'text-emerald-500', bg: 'bg-emerald-500/10', path: '/production' },
+    { label: 'Taux Qualité', value: '96.4%', icon: ShieldCheck, color: 'text-purple-500', bg: 'bg-purple-500/10', path: '/quality' },
+    { label: 'Flotte Active', value: '18', icon: Truck, color: 'text-amber-500', bg: 'bg-amber-500/10', path: '/logistics' },
   ];
 
   return (
@@ -70,6 +72,7 @@ const Home: React.FC = () => {
           <motion.div 
             key={idx}
             variants={item}
+            onClick={() => navigate(stat.path)}
             className="glass-card p-6 border-slate-800/50 hover:border-slate-700 transition-all group group-stat"
           >
             <div className="flex justify-between items-start mb-4">
@@ -153,7 +156,10 @@ const Home: React.FC = () => {
               </div>
             </div>
 
-            <button className="w-full py-3 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-sm font-bold text-white transition-all border border-slate-700/50">
+            <button 
+              onClick={() => navigate('/hr')}
+              className="w-full py-3 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-sm font-bold text-white transition-all border border-slate-700/50"
+            >
               Accéder au module Pointage
             </button>
           </div>
@@ -164,10 +170,21 @@ const Home: React.FC = () => {
             <p className="text-xs text-slate-400 leading-relaxed mb-4">
               Accédez aux documents officiels, certificats de travail et titres de congés directement dans votre espace Admin.
             </p>
-            <button className="text-xs font-bold text-blue-400 hover:text-blue-300">Démarrer le chat interne →</button>
+            <button 
+              onClick={() => alert("Initialisation du Chat Sécurisé Elite...")}
+              className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              Démarrer le chat interne →
+            </button>
           </div>
         </section>
       </div>
+
+      {/* KPI Navigation Logic */}
+      <style>{`
+        .group-stat { cursor: pointer; transition: transform 0.2s; }
+        .group-stat:active { transform: scale(0.98); }
+      `}</style>
     </motion.div>
   );
 };

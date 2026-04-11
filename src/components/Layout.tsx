@@ -59,7 +59,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </div>
         </div>
 
-        <nav className="flex-1 space-y-2">
+        <nav className="flex-1 space-y-2 overflow-y-auto custom-scrollbar pr-2">
           {filteredNav.map((item) => (
             <NavLink
               key={item.path}
@@ -73,7 +73,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               `}
             >
               <item.icon size={20} className="transition-transform group-hover:scale-110" />
-              <span className="font-medium">{item.name}</span>
+              <span className="font-medium text-sm">{item.name}</span>
               {location.pathname === item.path && (
                 <motion.div 
                   layoutId="activeTab"
@@ -84,7 +84,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           ))}
         </nav>
 
-        <div className="mt-auto pt-6 border-t border-slate-800 space-y-2">
+        <div className="mt-8 pt-6 border-t border-slate-800 space-y-2">
           {user?.role === 'super_admin' && (
             <NavLink 
               to="/settings"
@@ -94,17 +94,22 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               `}
             >
               <Settings size={20} />
-              <span className="font-medium">Paramètres Pro</span>
+              <span className="font-medium text-sm">Paramètres Pro</span>
             </NavLink>
           )}
           <button 
             onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-rose-500 hover:bg-rose-500/10 transition-all font-medium"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-rose-500 hover:bg-rose-500/10 transition-all font-medium text-sm"
           >
             <LogOut size={20} />
             <span>Déconnexion</span>
           </button>
         </div>
+
+        <style>{`
+          .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+          .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        `}</style>
       </aside>
 
       {/* Main Content Area */}
