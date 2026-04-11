@@ -52,9 +52,54 @@ const AdminPage: React.FC = () => {
     
     alert("Compte créé pour " + newUser.name);
     setNewUser({ email: '', name: '', role: 'teleoperator', pin: '0000' });
-    // Refresh
+    loadData();
+  };
+
+  const handleCsvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const text = event.target?.result as string;
+      const lines = text.split('\n');
+      const agentsToInsert = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        
+        // CSV Regex logic to handle quotes and semicolons
+        const matches = line.match(/(".*?"|[^;]+)(?=\s*;|\s*$)/g);
+        if (!matches) continue;
+        
+        const clean = (s: string) => s?.replace(/^"|"$/g, '').trim();
+
+        agentsToInsert.push({
+          zkteco_id: clean(matches[0]),
+          nom: clean(matches[1]) || 'Utilisateur ' + i,
+          role: clean(matches[2]) || 'téléopérateur',
+          email: clean(matches[3]),
+          code_pin: clean(matches[4]) || '0000'
+        });
+      }
+
+      const { data, error } = await supabase.from('agents').insert(agentsToInsert).select();
+      if (error) alert("Erreur Import: " + error.message);
+      else {
+        alert(`${data.length} agents importés avec succès !`);
+        loadData();
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const loadData = async () => {
     const { data: p } = await supabase.from('agents').select('*').order('created_at', { ascending: false });
     setEmployees(p || []);
+    
+    const { data: d } = await supabase.from('documents').select('*, agents(nom)').order('created_at', { ascending: false });
+    setDocuments(d || []);
   };
 
   const handleSendBroadcast = () => {
@@ -166,6 +211,21 @@ const AdminPage: React.FC = () => {
                       <Users size={18} className="text-blue-500" />
                       Collaborateurs Actifs
                     </h2>
+                    <div className="flex gap-4">
+                       <input 
+                         type="file" 
+                         id="csvUpload" 
+                         accept=".csv" 
+                         className="hidden" 
+                         onChange={handleCsvUpload} 
+                       />
+                       <label 
+                         htmlFor="csvUpload"
+                         className="flex items-center gap-2 px-4 py-2 bg-blue-600/10 text-blue-400 border border-blue-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-blue-600 hover:text-white transition-all"
+                       >
+                          <FileUp size={16} /> IMPORTER CSV (ZKTECO)
+                       </label>
+                    </div>
                   </div>
                   <div className="divide-y divide-slate-800/50">
                     {employees.map((emp, i) => (

@@ -40,11 +40,18 @@ const ProductionPage: React.FC = () => {
       interval = setInterval(() => {
         setAudioLevels(Array(30).fill(0).map(() => Math.max(10, Math.random() * 100)));
         if (Math.random() > 0.8) {
-          const phrases = ["Bonjour, comment allez-vous?", "Oui, je comprends votre besoin.", "Notre offre est limitée.", "Voulez-vous valider?", "Parfait, je note."];
+          const phrases = [
+            "Bonjour, ici le service client Growth Partners.",
+            "Je vous appelle concernant votre demande de devis.",
+            "Nous avons une offre exceptionnelle pour vous aujourd'hui.",
+            "Est-ce que vous m'entendez bien ?",
+            "Parfait, je transmets votre dossier à la validation.",
+            "Merci pour votre confiance, bonne journée."
+          ];
           setTranscript(prev => prev + " " + phrases[Math.floor(Math.random() * phrases.length)]);
           setAiScore(prev => Math.min(100, prev + Math.random() * 5));
         }
-      }, 100);
+      }, 300);
     } else {
       setAudioLevels(Array(30).fill(10));
     }
@@ -54,14 +61,20 @@ const ProductionPage: React.FC = () => {
   const handleStartCall = () => {
     if (!phone) return alert("Veuillez saisir un numéro client");
     setStatus('calling');
-    setIsRecording(true);
-    setAiScore(70); // Base score
+    setTranscript("Connexion au serveur Communique...");
+    
+    setTimeout(() => {
+      setTranscript("Appel en cours... [SIGNAL DÉTECTÉ]");
+      setIsRecording(true);
+      setAiScore(70);
+    }, 1500);
   };
 
   const handleEndCall = () => {
     setIsRecording(false);
     setStatus('recorded');
     setAiScore(prev => Math.round(prev));
+    setTranscript(prev => prev + " [APPEL TERMINÉ]");
   };
 
   const handleSave = async () => {
