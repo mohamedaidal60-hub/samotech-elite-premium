@@ -23,7 +23,9 @@ export interface Employee extends User {
   department: 'administration' | 'production' | 'logistics' | 'quality';
   position: string;
   startDate: string;
+  joinDate: string;
   status: 'active' | 'on_leave' | 'absent';
+  performanceScore: number;
 }
 
 export interface Vehicle {
