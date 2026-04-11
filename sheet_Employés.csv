@@ -1,0 +1,12 @@
+LISTE DES EMPLOYÉS  –  Code du Travail Algérien (Loi 90-11),,,,,,,,,,,,,,,,,
+Matricule,Nom,Prénom,Date Naissance,NIF,N° CNAS,Poste,Département,Date Embauche,Type Contrat,Durée CDD (mois),Sal. Base (DA),Catégorie,Qualification,Wilaya,Téléphone,Email,Statut
+EMP001,BENALI,Mohamed,15/03/1985,199031500001,09900123456,Directeur RH,Direction,01/01/2015,CDI,,"120,000 DA",Cadre Supérieur,Licence,Alger,0661234567,m.benali@ent.dz,Actif
+EMP002,KADDOUR,Fatima,22/07/1990,199031500002,09900234567,Comptable,Finance,15/03/2018,CDI,,"65,000 DA",Cadre,BTS,Alger,0662345678,f.kaddour@ent.dz,Actif
+EMP003,HAMIDI,Karim,10/11/1992,199031500003,09900345678,Technicien,Production,01/06/2019,CDD,24,"48,000 DA",Agent Maîtrise,BEP,Blida,0663456789,k.hamidi@ent.dz,Actif
+EMP004,ZOUAOUI,Amina,05/04/1988,199031500004,09900456789,Ingénieur,Bureau d'Études,10/09/2016,CDI,,"95,000 DA",Cadre Sup.,Ingénieur,Alger,0664567890,a.zouaoui@ent.dz,Actif
+EMP005,MEBARKI,Hocine,30/08/1980,199031500005,09900567890,Resp. Ventes,Commercial,01/01/2010,CDI,,"80,000 DA",Cadre,Licence,Tipaza,0665678901,h.mebarki@ent.dz,Actif
+EMP006,BELHADJ,Nadia,14/12/1995,199031500006,09900678901,Assistante RH,Direction,01/09/2020,CDD,12,"38,000 DA",Employé,BTS,Alger,0666789012,n.belhadj@ent.dz,Actif
+EMP007,SAADI,Rachid,02/06/1978,199031500007,09900789012,Chef Atelier,Production,15/05/2005,CDI,,"72,000 DA",Agent Maîtrise,BEP,Blida,0667890123,r.saadi@ent.dz,Actif
+EMP008,BOUZID,Sarah,19/01/1993,199031500008,09900890123,Analyste Fin.,Finance,01/03/2021,CDI,,"58,000 DA",Cadre,Master,Alger,0668901234,s.bouzid@ent.dz,Actif
+EMP009,FERHAT,Lotfi,25/09/1987,199031500009,09900901234,Commercial,Commercial,01/07/2017,CDI,,"45,000 DA",Employé,BAC,Médéa,0669012345,l.ferhat@ent.dz,Actif
+EMP010,OUKIL,Yasmine,08/03/1991,199031500010,09900012345,Secrétaire,Direction,15/11/2019,CDI,,"36,000 DA",Employé,BTS,Alger,0660123456,y.oukil@ent.dz,Actif

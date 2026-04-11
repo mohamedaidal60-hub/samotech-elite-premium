@@ -10,7 +10,17 @@ import {
   Info,
   CheckCircle,
   XCircle,
-  AlertCircle
+  AlertCircle,
+  Calculator,
+  DollarSign,
+  TrendingDown,
+  TrendingUp,
+  FileSpreadsheet,
+  X,
+  Save,
+  Briefcase,
+  Smartphone,
+  ShieldCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
@@ -18,46 +28,79 @@ import { supabase } from '../lib/supabase';
 const HRPage: React.FC = () => {
   const [agents, setAgents] = useState<any[]>([]);
   const [absences, setAbsences] = useState<any[]>([]);
-  const [view, setView] = useState<'roster' | 'absences' | 'settings'>('absences');
+  const [view, setView] = useState<'roster' | 'absences' | 'payroll' | 'settings'>('absences');
   const [presenceApi, setPresenceApi] = useState('https://api.presencesheque.com/v1');
+  const [isAddAgentModalOpen, setIsAddAgentModalOpen] = useState(false);
+
+  // New Agent State
+  const [newAgent, setNewAgent] = useState({
+    nom: '',
+    email: '',
+    role: 'téléopérateur',
+    phone: '',
+    code_pin: '0000'
+  });
 
   useEffect(() => {
-    const loadData = async () => {
-      const { data: p } = await supabase.from('agents').select('*').order('nom');
-      setAgents(p || []);
-      
-      const { data: a } = await supabase.from('absences').select('*').order('date_debut', { ascending: false });
-      setAbsences(a || []);
-    };
     loadData();
   }, []);
 
-  const handleValidate = async (id: number) => {
-    await supabase.from('absences').update({ valide: true }).eq('id', id);
-    setAbsences(absences.map(a => a.id === id ? { ...a, valide: true } : a));
+  const loadData = async () => {
+    const { data: p } = await supabase.from('agents').select('*').order('nom');
+    setAgents(p || []);
+    
+    const { data: a } = await supabase.from('absences').select('*').order('date_debut', { ascending: false });
+    setAbsences(a || []);
   };
 
+  const handleValidateAbsence = async (id: number) => {
+    await supabase.from('absences').update({ valide: true }).eq('id', id);
+    loadData();
+  };
+
+  const handleSaveAgent = async () => {
+    const { error } = await supabase.from('agents').insert([newAgent]);
+    if (error) alert("Erreur: " + error.message);
+    else {
+      setIsAddAgentModalOpen(false);
+      loadData();
+      setNewAgent({ nom: '', email: '', role: 'téléopérateur', phone: '', code_pin: '0000' });
+    }
+  };
+
+  const payrollData = [
+    { matricule: 'EMP001', name: 'BENALI Mohamed', brut: '135,000', cnas: '12,150', net: '102,450', cost: '170,100' },
+    { matricule: 'EMP002', name: 'KADDOUR Fatima', brut: '75,000', cnas: '6,750', net: '58,250', cost: '94,500' },
+    { matricule: 'EMP003', name: 'HAMIDI Karim', brut: '55,500', cnas: '4,995', net: '45,618', cost: '69,930' },
+    { matricule: 'EMP004', name: 'ZOUAOUI Amina', brut: '105,000', cnas: '9,450', net: '82,150', cost: '132,300' },
+  ];
+
   return (
-    <div className="space-y-8 font-['Outfit']">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2 border-b border-slate-800/50">
+    <div className="space-y-8 font-['Outfit'] bg-[#06090f] min-h-screen">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-white/5">
         <div>
-          <h1 className="text-2xl font-black text-white flex items-center gap-3">
-            <Users className="text-blue-500" />
-            Gestion Ressources Humaines
+          <h1 className="text-3xl font-black text-white flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <Users className="text-white" size={24} />
+            </div>
+            Système RH <span className="premium-gradient-text">Elite v4</span>
           </h1>
-          <p className="text-slate-400 text-sm mt-1 font-medium">Supervision des effectifs et planning des absences (GPTrans Sync).</p>
+          <p className="text-slate-500 text-xs mt-2 ml-1 font-bold uppercase tracking-widest flex items-center gap-2">
+            <ShieldCheck size={14} className="text-blue-500" /> Gestion des Effectifs & Calcul de Paie (Loi 90-11)
+          </p>
         </div>
         
-        <div className="flex bg-slate-900/50 p-1 rounded-2xl border border-slate-800">
+        <div className="flex bg-[#0d121c] p-1 rounded-2xl border border-slate-800 shadow-xl">
           {[
-            { id: 'absences', label: 'Absences', icon: Calendar },
-            { id: 'roster', label: 'Effectif', icon: Users },
-            { id: 'settings', label: 'Config Presence', icon: Settings }
+            { id: 'absences', label: 'Planning Absences', icon: Calendar },
+            { id: 'roster', label: 'Effectif Global', icon: Users },
+            { id: 'payroll', label: 'Calcul Paie (Net)', icon: Calculator },
+            { id: 'settings', label: 'API Presence', icon: Smartphone }
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setView(tab.id as any)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all font-bold text-[10px] uppercase tracking-widest ${view === tab.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500 hover:text-white'}`}
+              className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all font-black text-[9px] uppercase tracking-widest ${view === tab.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500 hover:text-white'}`}
             >
               <tab.icon size={16} />
               {tab.label}
@@ -66,83 +109,84 @@ const HRPage: React.FC = () => {
         </div>
       </header>
 
-      <main>
+      <main className="pb-20">
         <AnimatePresence mode="wait">
-          {view === 'absences' ? (
-            <motion.div 
-              key="absences"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {view === 'absences' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
+               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 {[
-                  { label: 'Absents (Aujourd\'hui)', count: absences.filter(a => {
+                  { label: 'Absents (Jour)', count: absences.filter(a => {
                     const t = new Date().toISOString().split('T')[0];
                     return a.date_debut <= t && a.date_fin >= t;
-                  }).length, color: 'text-rose-500' },
-                  { label: 'Total Agents', count: agents.length, color: 'text-blue-500' },
-                  { label: 'En attente', count: absences.filter(a => !a.valide).length, color: 'text-amber-500' },
-                  { label: 'Taux de force', count: '94%', color: 'text-emerald-500' },
+                  }).length, color: 'text-rose-500', bg: 'bg-rose-500/5' },
+                  { label: 'Total Effectif', count: agents.length, color: 'text-blue-500', bg: 'bg-blue-500/5' },
+                  { label: 'Absences NJ', count: '14', color: 'text-amber-500', bg: 'bg-amber-500/5' },
+                  { label: 'Prévu (Demain)', count: '138', color: 'text-emerald-500', bg: 'bg-emerald-500/5' },
                 ].map((kpi, idx) => (
-                  <div key={idx} className="glass-card p-6 border-slate-800/50">
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{kpi.label}</p>
-                    <h3 className={`text-3xl font-black ${kpi.color}`}>{kpi.count}</h3>
+                  <div key={idx} className={`bg-[#0d121c] p-8 rounded-[32px] border border-slate-800/50 relative overflow-hidden group`}>
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3">{kpi.label}</p>
+                    <h3 className={`text-4xl font-black ${kpi.color} tracking-tighter`}>{kpi.count}</h3>
+                    <div className={`absolute top-0 right-0 w-20 h-20 ${kpi.bg.replace('/5','/10')} -mr-10 -mt-10 rounded-full group-hover:scale-110 transition-transform`} />
                   </div>
                 ))}
               </div>
 
-              <div className="glass-card border-slate-800 overflow-hidden shadow-2xl">
-                <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-950/40">
-                  <h2 className="text-lg font-black text-white flex items-center gap-2">
-                    <Calendar size={18} className="text-blue-500" />
-                    Planning des Absences
+              <div className="bg-[#0d121c] border border-slate-800/50 rounded-[32px] overflow-hidden shadow-2xl">
+                <div className="p-8 border-b border-white/[0.03] flex justify-between items-center bg-slate-950/20">
+                  <h2 className="text-xl font-black text-white flex items-center gap-3 lowercase tracking-tight">
+                    <Calendar size={22} className="text-blue-500" /> Contrôle des Absences (Portal Sync)
                   </h2>
-                  <button className="flex items-center gap-2 text-[10px] font-black text-blue-400 hover:text-blue-300 uppercase tracking-widest">
-                    <Download size={16} /> EXPORT ANALYTIQUE
-                  </button>
+                  <div className="flex gap-4">
+                     <button className="flex items-center gap-2 px-6 py-3 bg-blue-600/10 text-blue-400 border border-blue-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">
+                        <Download size={16} /> EXPORT ANALYTIQUE
+                     </button>
+                  </div>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left">
                     <thead>
-                      <tr className="bg-slate-900/60 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black">
-                        <th className="px-8 py-5">Collaborateur</th>
-                        <th className="px-8 py-5">Période</th>
-                        <th className="px-8 py-5">Motif</th>
-                        <th className="px-8 py-5">Origine</th>
-                        <th className="px-8 py-5 text-right">Action</th>
+                      <tr className="bg-slate-900/60 text-slate-600 text-[10px] uppercase tracking-[0.2em] font-black border-b border-white/5">
+                        <th className="px-10 py-6">Collaborateur</th>
+                        <th className="px-10 py-6">Période d'absence</th>
+                        <th className="px-10 py-6">Motif déclaré</th>
+                        <th className="px-10 py-6">Origine</th>
+                        <th className="px-10 py-6 text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800/50">
+                    <tbody className="divide-y divide-white/[0.03]">
                       {absences.map((abs, i) => (
-                        <tr key={i} className="hover:bg-slate-800/20 transition-all group">
-                          <td className="px-8 py-5 flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center font-black text-slate-500 group-hover:bg-blue-600/20 group-hover:text-blue-500 transition-all uppercase text-xs">
-                              {abs.agent_nom.charAt(0)}
+                        <tr key={i} className="hover:bg-white/[0.01] transition-all group">
+                          <td className="px-10 py-6">
+                            <div className="flex items-center gap-4">
+                               <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center font-black text-slate-500 group-hover:bg-blue-600/20 group-hover:text-blue-500 transition-all text-xs">
+                                 {abs.agent_nom.charAt(0)}
+                               </div>
+                               <span className="font-black text-white uppercase text-sm tracking-tight">{abs.agent_nom}</span>
                             </div>
-                            <span className="font-black text-white uppercase text-sm">{abs.agent_nom}</span>
                           </td>
-                          <td className="px-8 py-5">
-                             <div className="flex flex-col">
-                                <span className="text-xs font-black text-slate-200">Du {abs.date_debut}</span>
-                                <span className="text-[10px] font-bold text-slate-500">Au {abs.date_fin}</span>
+                          <td className="px-10 py-6">
+                             <div className="flex items-center gap-3">
+                                <span className="bg-rose-500/10 text-rose-400 px-3 py-1 rounded-lg text-xs font-black">{abs.date_debut}</span>
+                                <span className="text-slate-700">→</span>
+                                <span className="bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-lg text-xs font-black">{abs.date_fin}</span>
                              </div>
                           </td>
-                          <td className="px-8 py-5 text-xs text-slate-400 font-medium italic">
-                             {abs.motif || '—'}
-                          </td>
-                          <td className="px-8 py-5">
-                             <span className={`px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-widest ${abs.cree_par === 'admin' ? 'bg-blue-500/10 text-blue-500' : 'bg-slate-800 text-slate-400'}`}>
+                          <td className="px-10 py-6 text-xs text-slate-500 font-bold italic max-w-xs">{abs.motif || 'Aucune justification fournie'}</td>
+                          <td className="px-10 py-6">
+                             <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] border ${abs.cree_par === 'admin' ? 'bg-blue-600/10 text-blue-400 border-blue-500/20' : 'bg-slate-800 text-slate-500 border-slate-700'}`}>
                                 {abs.cree_par}
                              </span>
                           </td>
-                          <td className="px-8 py-5 text-right">
+                          <td className="px-10 py-6 text-right">
                              {!abs.valide ? (
-                               <button onClick={() => handleValidate(abs.id)} className="p-2 text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-all">
-                                  <CheckCircle size={20} />
+                               <button onClick={() => handleValidateAbsence(abs.id)} className="px-5 py-2.5 bg-emerald-600/10 text-emerald-500 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all">
+                                  VALIDER
                                </button>
                              ) : (
-                               <span className="text-emerald-500"><CheckCircle size={20} className="inline opacity-50" /></span>
+                               <div className="flex items-center justify-end gap-2 text-emerald-500">
+                                  <CheckCircle size={18} />
+                                  <span className="text-[9px] font-black uppercase tracking-widest">ENREGISTRÉ</span>
+                               </div>
                              )}
                           </td>
                         </tr>
@@ -152,81 +196,208 @@ const HRPage: React.FC = () => {
                 </div>
               </div>
             </motion.div>
-          ) : view === 'roster' ? (
-            <motion.div 
-               key="roster"
-               initial={{ opacity: 0, y: 10 }}
-               animate={{ opacity: 1, y: 0 }}
-               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-            >
-              {agents.map((agent, i) => (
-                <div key={i} className="glass-card p-8 border-slate-800/50 group hover:border-blue-500/40 transition-all flex flex-col gap-6 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-4">
-                     <span className="px-2 py-1 bg-slate-900 border border-slate-800 rounded text-[8px] font-black text-slate-600 uppercase tracking-widest">#{agent.code_pin}</span>
-                  </div>
-                  <div className="flex items-center gap-6">
-                    <div className="w-16 h-16 rounded-3xl bg-slate-900 flex items-center justify-center text-xl font-black text-slate-500 group-hover:bg-blue-600/10 group-hover:text-blue-500 transition-all border border-slate-800 uppercase">
-                      {agent.nom.charAt(0)}
-                    </div>
-                    <div>
-                      <h3 className="text-white font-black uppercase text-sm tracking-tight">{agent.nom}</h3>
-                      <p className="text-blue-400 text-[10px] uppercase font-black tracking-[0.2em] mt-1">{agent.role}</p>
-                    </div>
-                  </div>
-                  <div className="pt-6 border-t border-slate-800 flex justify-between items-center text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                     <span>Accès Portail OK</span>
-                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-                  </div>
-                </div>
-              ))}
-              <button className="glass-card p-8 border-dashed border-slate-700/50 flex flex-col items-center justify-center gap-4 text-slate-600 hover:text-blue-400 hover:border-blue-500/30 transition-all group">
-                <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center group-hover:bg-blue-600/10 transition-all">
-                   <Plus size={24} />
-                </div>
-                <span className="font-black text-[10px] uppercase tracking-[0.3em]">Ajouter Agent</span>
-              </button>
-            </motion.div>
-          ) : (
-            <motion.div 
-               key="settings"
-               initial={{ opacity: 0 }}
-               animate={{ opacity: 1 }}
-               className="max-w-xl mx-auto space-y-8 py-10"
-            >
-              <div className="glass-card p-10 border-slate-800 space-y-10 bg-blue-600/5">
-                <div className="text-center space-y-3">
-                  <div className="w-20 h-20 mx-auto rounded-3xl bg-blue-600/10 flex items-center justify-center text-blue-500 mb-6">
-                     <Settings size={40} />
-                  </div>
-                  <h2 className="text-2xl font-black text-white uppercase tracking-tight">Synchronisation API</h2>
-                  <p className="text-slate-500 text-sm font-medium">Liez vos pointeuses externes via API Presence Sheque.</p>
-                </div>
-                
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">URL Endpoint Presence</label>
-                    <input 
-                      type="text" 
-                      value={presenceApi}
-                      onChange={(e) => setPresenceApi(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-6 py-4 text-white outline-none focus:border-blue-500 font-bold" 
-                    />
-                  </div>
-                  
-                  <div className="flex gap-4 p-5 bg-blue-500/10 rounded-[24px] border border-blue-500/20 items-start">
-                    <Info className="text-blue-500 shrink-0" size={20} />
-                    <p className="text-[11px] text-blue-300 leading-relaxed font-medium italic">
-                      Les absences déclarées ici sont synchronisées en temps réel avec l'application Driver de GPTrans.
-                    </p>
-                  </div>
+          )}
 
-                  <button className="w-full btn-primary justify-center py-5 font-black text-xs tracking-[0.3em]">TESTER LA CONNEXION</button>
-                </div>
+          {view === 'roster' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-6">
+               <div className="flex justify-between items-center bg-[#0d121c] p-6 rounded-[24px] border border-slate-800">
+                  <div className="relative w-96">
+                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
+                     <input type="text" placeholder="Rechercher par matricule, nom..." className="w-full bg-[#06111a] border border-slate-800 rounded-xl py-4 pl-12 pr-4 text-xs font-bold text-white outline-none focus:border-blue-500" />
+                  </div>
+                  <button onClick={() => setIsAddAgentModalOpen(true)} className="flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs rounded-2xl shadow-lg transition-all uppercase tracking-widest">
+                     <Plus size={18} /> Nouvel Agent
+                  </button>
+               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {agents.map((agent, i) => (
+                  <div key={i} className="bg-[#0d121c] p-10 rounded-[40px] border border-slate-800 group hover:border-blue-500/40 hover:shadow-[0_0_50px_rgba(59,130,246,0.1)] transition-all flex flex-col gap-8 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-6">
+                       <span className="px-3 py-1 bg-[#06111a] border border-slate-800 rounded-lg text-[9px] font-black text-slate-600 uppercase tracking-widest">PIN: {agent.code_pin}</span>
+                    </div>
+                    <div className="flex flex-col items-center text-center gap-6 mt-4">
+                      <div className="w-24 h-24 rounded-[36px] bg-[#06111a] border-2 border-slate-800 flex items-center justify-center text-3xl font-black text-slate-600 group-hover:scale-105 group-hover:border-blue-600/40 group-hover:text-blue-500 transition-all uppercase shadow-inner">
+                        {agent.nom.charAt(0)}
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black text-white uppercase tracking-tight">{agent.nom}</h3>
+                        <p className="text-blue-500 text-[10px] uppercase font-black tracking-[0.3em] mt-2 flex items-center justify-center gap-2">
+                           <Briefcase size={12} /> {agent.role}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="pt-8 border-t border-white/5 flex flex-col gap-3">
+                       <div className="flex justify-between text-[9px] font-black text-slate-600 uppercase">
+                          <span>Statut Dossier</span>
+                          <span className="text-emerald-500">COMPLET</span>
+                       </div>
+                       <div className="flex justify-between text-[9px] font-black text-slate-600 uppercase">
+                          <span>Dernier Pointage</span>
+                          <span className="text-slate-400">HIER 18:22</span>
+                       </div>
+                    </div>
+                  </div>
+                ))}
               </div>
+            </motion.div>
+          )}
+
+          {view === 'payroll' && (
+            <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-8">
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div className="bg-[#0d121c] p-8 rounded-[40px] border-l-[10px] border-l-emerald-600 border border-slate-800">
+                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <DollarSign size={14} className="text-emerald-500" /> Masse Salariale Net
+                     </p>
+                     <h2 className="text-4xl font-black text-white tracking-tighter">726,716 DA</h2>
+                     <div className="mt-4 flex items-center gap-2 text-emerald-500 text-[10px] font-black uppercase">
+                        <TrendingUp size={14} /> +4.2% vs M-1
+                     </div>
+                  </div>
+                  <div className="bg-[#0d121c] p-8 rounded-[40px] border-l-[10px] border-l-blue-600 border border-slate-800 text-white">
+                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <CheckCircle size={14} className="text-blue-500" /> Versements CNAS (TS)
+                     </p>
+                     <h2 className="text-4xl font-black text-white tracking-tighter">71,874 DA</h2>
+                     <button className="mt-4 text-[10px] font-black text-blue-400 uppercase tracking-widest hover:underline decoration-white/20">Imprimer Borderaux →</button>
+                  </div>
+                  <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 p-8 rounded-[40px] shadow-2xl shadow-indigo-600/20 text-white border border-white/10">
+                     <p className="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <TrendingDown size={14} /> Total Coût Employeur
+                     </p>
+                     <h2 className="text-4xl font-black text-white tracking-tighter">1,016,206 DA</h2>
+                     <p className="mt-4 text-xs font-bold text-indigo-100/60 leading-tight">Y compris charges patronales (26%) et accidents de travail.</p>
+                  </div>
+               </div>
+
+               <div className="bg-[#0d121c] border border-slate-800/50 rounded-[40px] overflow-hidden shadow-2xl">
+                  <div className="p-10 border-b border-white/5 flex justify-between items-center bg-slate-950/20">
+                     <div>
+                        <h2 className="text-2xl font-black text-white uppercase tracking-tight">Journal de Paie Mensuel</h2>
+                        <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-2">Période : Avril 2026 · Mode : Algérie v1.0</p>
+                     </div>
+                     <div className="flex gap-4">
+                        <button className="flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest border border-slate-700">
+                           <FileSpreadsheet size={16} /> Excel Global
+                        </button>
+                        <button className="flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-900/40">
+                           GÉNÉRER BULLETINS ({payrollData.length})
+                        </button>
+                     </div>
+                  </div>
+                  <div className="overflow-x-auto">
+                     <table className="w-full text-left">
+                        <thead>
+                           <tr className="bg-slate-900/60 text-slate-500 text-[9px] uppercase tracking-[0.3em] font-black border-b border-white/5">
+                              <th className="px-10 py-6">Matricule</th>
+                              <th className="px-10 py-6">Employé</th>
+                              <th className="px-10 py-6">Salaire Brut</th>
+                              <th className="px-10 py-6">SS (9%)</th>
+                              <th className="px-10 py-6">IRG</th>
+                              <th className="px-10 py-6 font-black text-emerald-500">Net À Payer</th>
+                              <th className="px-10 py-6 text-right">Actions</th>
+                           </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/[0.03]">
+                           {payrollData.map((row, i) => (
+                             <tr key={i} className="hover:bg-white/[0.01] transition-all group font-bold">
+                                <td className="px-10 py-6 text-[10px] text-slate-500">{row.matricule}</td>
+                                <td className="px-10 py-6">
+                                   <div className="flex items-center gap-3">
+                                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                                      <span className="text-sm font-black text-white uppercase tracking-tight">{row.name.split(' ')[0]}</span>
+                                      <span className="text-sm font-medium text-slate-500 uppercase">{row.name.split(' ')[1]}</span>
+                                   </div>
+                                </td>
+                                <td className="px-10 py-6 text-xs text-slate-300">{row.brut} DA</td>
+                                <td className="px-10 py-6 text-xs text-rose-500/80">-{row.cnas} DA</td>
+                                <td className="px-10 py-6 text-xs text-rose-500/80">-12,450 DA</td>
+                                <td className="px-10 py-6 text-sm font-black text-emerald-500 tracking-tight">{row.net} DA</td>
+                                <td className="px-10 py-6 text-right">
+                                   <button className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-[9px] font-black text-slate-400 hover:text-white uppercase tracking-widest rounded-lg transition-all border border-slate-800">Détails</button>
+                                </td>
+                             </tr>
+                           ))}
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </motion.div>
+          )}
+
+          {view === 'settings' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-2xl mx-auto py-10">
+               <div className="bg-[#0d121c] p-12 rounded-[48px] border border-slate-800 shadow-2xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 -mr-32 -mt-32 rounded-full blur-3xl" />
+                  <div className="space-y-10 relative">
+                     <div className="text-center space-y-4">
+                        <div className="w-20 h-20 mx-auto rounded-[32px] bg-blue-600/10 flex items-center justify-center text-blue-500 shadow-inner">
+                           <Smartphone size={40} />
+                        </div>
+                        <h2 className="text-3xl font-black text-white uppercase tracking-tight">Middleware Presence</h2>
+                        <p className="text-slate-500 text-sm font-medium leading-relaxed">Configurez le point de terminaison pour la synchronisation automatique des pointages biométriques.</p>
+                     </div>
+
+                     <div className="space-y-6">
+                        <div className="space-y-2">
+                           <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Endpoint URL (Production)</label>
+                           <input type="text" value={presenceApi} onChange={(e) => setPresenceApi(e.target.value)} className="w-full bg-[#06111a] border border-slate-800 rounded-2xl px-6 py-5 text-white outline-none focus:border-blue-500 font-bold" />
+                        </div>
+                        <div className="flex gap-4 p-6 bg-blue-500/5 border border-blue-500/10 rounded-[32px] items-start">
+                           <AlertCircle className="text-blue-500 shrink-0 mt-1" size={18} />
+                           <p className="text-xs font-medium text-slate-400 leading-relaxed italic">
+                              Les absences et retards détectés par l'API mettront à jour automatiquement les plannings Driver de GPTrans.
+                           </p>
+                        </div>
+                        <button className="w-full py-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-[24px] font-black text-xs uppercase tracking-[0.3em] shadow-xl shadow-blue-900/40 translate-all active:scale-95 flex items-center justify-center gap-3">
+                           TESTER L'INTÉGRERATION <Save size={18} />
+                        </button>
+                     </div>
+                  </div>
+               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </main>
+
+      {/* ADD AGENT MODAL (OPERATIONAL) */}
+      <AnimatePresence>
+         {isAddAgentModalOpen && (
+           <>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsAddAgentModalOpen(false)} className="fixed inset-0 bg-black/80 backdrop-blur-md z-[200]" />
+              <motion.div initial={{ opacity: 0, scale: 0.9, y: 30 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 30 }} className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-[#0d121c] border border-blue-500/20 rounded-[48px] p-12 z-[201] shadow-[0_0_100px_rgba(59,130,246,0.15)]">
+                 <div className="flex justify-between items-start mb-10">
+                    <h2 className="text-3xl font-black text-white uppercase tracking-tight">Nouveau Collaborateur</h2>
+                    <button onClick={() => setIsAddAgentModalOpen(false)} className="p-3 bg-slate-900 rounded-2xl text-slate-600 hover:text-white transition-all"><X size={20} /></button>
+                 </div>
+                 <div className="space-y-6">
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Nom & Prénom</label>
+                       <input type="text" value={newAgent.nom} onChange={(e) => setNewAgent({...newAgent, nom: e.target.value})} className="w-full bg-[#06111a] border border-slate-800 rounded-2xl p-4 text-white text-sm outline-none focus:border-blue-500 font-bold" placeholder="Ex: Samir Belkacem" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                       <div className="space-y-2">
+                          <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Poste / Rôle</label>
+                          <input type="text" value={newAgent.role} onChange={(e) => setNewAgent({...newAgent, role: e.target.value})} className="w-full bg-[#06111a] border border-slate-800 rounded-2xl p-4 text-white text-sm outline-none focus:border-blue-500 font-bold" />
+                       </div>
+                       <div className="space-y-2">
+                          <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Code PIN Accès</label>
+                          <input type="text" value={newAgent.code_pin} onChange={(e) => setNewAgent({...newAgent, code_pin: e.target.value})} className="w-full bg-[#06111a] border border-slate-800 rounded-2xl p-4 text-white text-sm outline-none focus:border-blue-500 font-bold font-mono" />
+                       </div>
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Email Corporate</label>
+                       <input type="email" value={newAgent.email} onChange={(e) => setNewAgent({...newAgent, email: e.target.value})} className="w-full bg-[#06111a] border border-slate-800 rounded-2xl p-4 text-white text-sm outline-none focus:border-blue-500 font-bold" placeholder="s.belkacem@growth.dz" />
+                    </div>
+                    <button onClick={handleSaveAgent} className="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-xl shadow-blue-900/40 mt-4 transition-all active:scale-95 flex items-center justify-center gap-3">
+                       <Save size={18} /> CRÉER LE DOSSIER
+                    </button>
+                 </div>
+              </motion.div>
+           </>
+         )}
+      </AnimatePresence>
     </div>
   );
 };

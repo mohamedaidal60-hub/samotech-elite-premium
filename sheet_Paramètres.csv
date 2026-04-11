@@ -1,0 +1,17 @@
+PARAMÈTRES – DROIT ALGÉRIEN (modifiables si la loi change),,,
+COTISATIONS CNAS,,,
+Taux CNAS salarié,CNAS_SAL,9.00%,9% du salaire brut
+Taux CNAS patronal,CNAS_PAT,26.00%,26% du salaire brut
+Taux accident travail,ACC_TRAV,1.25%,1.25% (charge patronale)
+BARÈME IRG MENSUEL 2025,,,
+Seuil exonération,IRG_S0,"30,000",0% si imposable ? 30 000 DA
+Seuil tranche 2,IRG_S1,"35,000",20% de 30 001 à 35 000 DA
+Seuil tranche 3,IRG_S2,"80,000",30% de 35 001 à 80 000 DA
+Taux tranche 2,IRG_T1,20.00%,20%
+Taux tranche 3,IRG_T2,30.00%,30%
+Taux tranche 4,IRG_T3,35.00%,35% au-delà de 80 000 DA
+AUTRES PARAMÈTRES,,,
+SNMG mensuel,SNMG,"20,000",Salaire Nat. Min. Garanti (DA)
+Jours ouvrables/mois,JOURS_OUV,22,Base légale 40h/semaine
+Prime présence (DA),PRM_PRES,"2,500",Si 100% présence
+Congés annuels (jours),CONGE_AN,30,Art. 48 Loi 90-11

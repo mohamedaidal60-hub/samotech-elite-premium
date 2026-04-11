@@ -1,0 +1,13 @@
+GESTION DES CONGÉS  –  Art. 48 Loi 90-11  (30 jours/an),,,,,,,,,,,
+Droit légal : 30 jours/an  |  Congé maternité : 14 semaines  |  Congé maladie : sur certificat médical,,,,,,,,,,,
+Matricule,Nom & Prénom,Type Congé,Date Début,Date Fin,Jours Demandés,Jours Légaux,Jours Pris,Solde Restant,Statut,Validé par,Observations
+EMP001,BENALI Mohamed,Congé Annuel,01/07/2025,20/07/2025,20,30,20,10,Approuvé,DG,
+EMP002,KADDOUR Fatima,Congé Maternité,15/06/2025,21/09/2025,98,30,98,-68,Approuvé,DRH,14 semaines
+EMP003,HAMIDI Karim,Congé Annuel,01/08/2025,15/08/2025,15,30,15,15,Approuvé,Chef Prod.,
+EMP004,ZOUAOUI Amina,Congé Maladie,10/05/2025,17/05/2025,7,30,7,23,Approuvé,DRH,Cert. médical
+EMP005,MEBARKI Hocine,Congé Annuel,15/07/2025,04/08/2025,20,30,20,10,En attente,DG,
+EMP006,BELHADJ Nadia,Congé Sans Solde,01/09/2025,07/09/2025,7,30,5,25,Refusé,DRH,Motif insuf.
+EMP007,SAADI Rachid,Congé Annuel,01/08/2025,25/08/2025,25,30,25,5,Approuvé,Chef Prod.,
+EMP008,BOUZID Sarah,Congé Annuel,01/09/2025,15/09/2025,15,30,15,15,En attente,DAF,
+EMP009,FERHAT Lotfi,Congé Exceptionnel,12/05/2025,14/05/2025,3,30,3,27,Approuvé,DRH,Mariage
+EMP010,OUKIL Yasmine,Congé Annuel,15/08/2025,29/08/2025,15,30,15,15,Approuvé,DG,
