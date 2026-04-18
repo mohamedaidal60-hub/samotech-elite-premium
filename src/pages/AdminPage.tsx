@@ -13,7 +13,8 @@ import {
   Activity,
   History,
   FileText,
-  BadgeAlert
+  BadgeAlert,
+  Search
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
