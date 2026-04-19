@@ -1,17 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Globe, PhoneCall } from 'lucide-react';
+import { Globe } from 'lucide-react';
+import Logo from './Logo';
 
 export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="container">
         <Link to="/" className="flex items-center gap-2">
-          {/* We will map the logo animation here later, for now text/icon */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <PhoneCall size={32} color="var(--color-primary)" />
-            <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-dark)' }}>Growth <span style={{ color: 'var(--color-primary)'}}>Partners</span></span>
-          </div>
+          <Logo />
         </Link>
         <div className="nav-links">
           <Link to="/" className="nav-link">Accueil</Link>
