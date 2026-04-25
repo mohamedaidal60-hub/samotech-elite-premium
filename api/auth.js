@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   const { email, password } = req.body;
   const adminEmail = process.env.ADMIN_EMAIL || "samotechgpt@gmail.com";
-  const adminPassword = process.env.ADMIN_PASSWORD || "SamoTech2026!";
+  const adminPassword = process.env.ADMIN_PASSWORD || "Azerty2026";
 
   if (email === adminEmail && password === adminPassword) {
     return res.status(200).json({

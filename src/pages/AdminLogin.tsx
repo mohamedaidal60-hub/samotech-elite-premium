@@ -4,7 +4,8 @@ import { loginAdmin, isAuthenticated } from "@/lib/api";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Lock, Mail, Shield } from "lucide-react";
+import { Lock, Mail } from "lucide-react";
+import logo from "@/assets/samotech-logo.png";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -36,8 +37,8 @@ const AdminLogin = () => {
     <main className="min-h-screen flex items-center justify-center cosmic-bg pt-24 pb-12 px-6">
       <div className="glass-card-glow w-full max-w-md p-8 rounded-2xl">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 mx-auto rounded-2xl gradient-bg flex items-center justify-center mb-4 animate-pulse-glow">
-            <Shield size={26} className="text-primary-foreground" />
+          <div className="w-16 h-16 mx-auto mb-4">
+            <img src={logo} alt="SamoTech" className="w-full h-full object-contain" />
           </div>
           <h1 className="text-2xl font-bold gradient-text">SamoTech Admin</h1>
           <p className="text-sm text-muted-foreground mt-1">Espace réservé administrateur</p>

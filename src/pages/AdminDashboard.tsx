@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchLeads, updateLeadStatus, deleteLead, logoutAdmin, changeAdminPassword, isAuthenticated, Lead } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, RefreshCw, Trash2, Mail, Phone, Building2, Calendar, MessageCircle, Shield } from "lucide-react";
+import { LogOut, RefreshCw, Trash2, Mail, Phone, Building2, Calendar, MessageCircle } from "lucide-react";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import logo from "@/assets/samotech-logo.png";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -90,7 +91,7 @@ const AdminDashboard = () => {
       <div className="container mx-auto">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-3">
-            <Shield className="text-accent" size={24} />
+            <img src={logo} alt="SamoTech" className="w-8 h-8 object-contain" />
             <h1 className="text-2xl sm:text-3xl font-black gradient-text">Panel Admin SamoTech</h1>
           </div>
           <div className="flex gap-2">
