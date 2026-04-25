@@ -11,12 +11,15 @@ const steps = [
   { icon: Rocket, title: "Launch & Scale", description: "Deploy campaigns, monitor results in real-time, and scale what works for exponential growth." },
 ];
 
+import WorkflowNodesBackground from "@/components/backgrounds/WorkflowNodesBackground";
+
 const Workflow = () => {
   const ref = useScrollReveal<HTMLElement>();
 
   return (
-    <main ref={ref} className="pt-24 pb-16">
-      <div className="container mx-auto px-6">
+    <main ref={ref} className="pt-24 pb-16 relative">
+      <WorkflowNodesBackground />
+      <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-20 animate-scroll-fade">
           <h1 className="text-4xl md:text-6xl font-black mb-4">
             Our <span className="gradient-text">Workflow</span>

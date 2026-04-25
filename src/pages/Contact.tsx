@@ -174,7 +174,7 @@ const Contact = () => {
         {mode === "ai" ? (
           <AIAssistant />
         ) : (
-          <div className="max-w-2xl mx-auto animate-scroll-fade">
+          <div className="max-w-2xl mx-auto animate-fade-in-up">
             <div className="flex items-center gap-2 mb-8 justify-center">
               {[t("contact.step.service"), t("contact.step.details"), t("contact.step.info")].map((label, i) => (
                 <div key={label} className="flex items-center gap-2">

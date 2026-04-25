@@ -169,7 +169,7 @@ const AIAssistant = () => {
     ];
 
     return (
-      <div className="max-w-2xl mx-auto animate-scroll-fade">
+      <div className="max-w-2xl mx-auto animate-fade-in-up">
         <div className="glass-card-glow rounded-2xl p-6 sm:p-10">
           <div className="flex items-center gap-3 mb-2">
             <Edit3 size={20} className="text-accent" />
@@ -218,7 +218,7 @@ const AIAssistant = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto animate-scroll-fade">
+    <div className="max-w-2xl mx-auto animate-fade-in-up">
       <div className="glass-card-glow rounded-2xl overflow-hidden flex flex-col" style={{ height: "560px" }}>
         <div className="flex items-center gap-3 p-4 border-b border-border/40 bg-gradient-to-r from-primary/10 to-secondary/10">
           <div className="w-10 h-10 rounded-full gradient-bg flex items-center justify-center animate-pulse-glow">
