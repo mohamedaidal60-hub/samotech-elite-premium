@@ -1,53 +1,63 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import Layout from './components/Layout';
-import LoginPage from './pages/LoginPage';
-import Home from './pages/Home';
-import HRPage from './pages/HRPage';
-import ProductionPage from './pages/ProductionPage';
-import LogisticsPage from './pages/LogisticsPage';
-import QualityPage from './pages/QualityPage';
-import AdminPage from './pages/AdminPage';
-import SettingsPage from './pages/SettingsPage';
-import AgentPortal from './pages/AgentPortal';
-import DriverPortal from './pages/DriverPortal';
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import WhatsAppFloat from "./components/WhatsAppFloat";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
+import Index from "./pages/Index";
+import Advertisement from "./pages/Advertisement";
+import Development from "./pages/Development";
+import Automation from "./pages/Automation";
+import Workflow from "./pages/Workflow";
+import Contact from "./pages/Contact";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import NotFound from "./pages/NotFound";
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, isLoading } = useAuth();
-  
-  if (isLoading) return (
-    <div className="min-h-screen bg-[#06090f] flex items-center justify-center">
-      <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-    </div>
+const queryClient = new QueryClient();
+
+const Shell = () => {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin");
+  return (
+    <>
+      {!isAdmin && <Navbar />}
+      {isAdmin && <Navbar />}
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/advertisement" element={<Advertisement />} />
+        <Route path="/development" element={<Development />} />
+        <Route path="/automation" element={<Automation />} />
+        <Route path="/workflow" element={<Workflow />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      {!isAdmin && <Footer />}
+      <WhatsAppFloat />
+    </>
   );
-
-  if (!user) return <Navigate to="/login" replace />;
-  return <Layout>{children}</Layout>;
 };
 
-function App() {
-  return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/agent" element={<AgentPortal />} />
-          <Route path="/driver" element={<DriverPortal />} />
-          
-          <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-          <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
-          <Route path="/hr" element={<ProtectedRoute><HRPage /></ProtectedRoute>} />
-          <Route path="/production" element={<ProtectedRoute><ProductionPage /></ProtectedRoute>} />
-          <Route path="/logistics" element={<ProtectedRoute><LogisticsPage /></ProtectedRoute>} />
-          <Route path="/quality" element={<ProtectedRoute><QualityPage /></ProtectedRoute>} />
-          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-          
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
-  );
-}
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider>
+      <LanguageProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Shell />
+          </BrowserRouter>
+        </TooltipProvider>
+      </LanguageProvider>
+    </ThemeProvider>
+  </QueryClientProvider>
+);
 
 export default App;
