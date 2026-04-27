@@ -67,7 +67,7 @@ const Advertisement = () => {
             <span className="gradient-text">High-Performance Ads.</span>
           </h1>
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-10">
-            Our end-to-end growth engine — from market research to lead generation — engineered to crush your cost-per-result on Meta platforms.
+            Our end-to-end SamoTech engine — from market research to lead generation — engineered to crush your cost-per-result on Meta platforms.
           </p>
 
           {/* Result Metrics */}
@@ -86,10 +86,10 @@ const Advertisement = () => {
           </div>
         </div>
 
-        {/* 5-Step Growth Engine */}
+        {/* 5-Step SamoTech Engine */}
         <section className="mb-32 animate-scroll-fade">
           <h2 className="text-3xl md:text-4xl font-bold mb-2 text-center">
-            The 5-Step <span className="gradient-text">Growth Engine</span>
+            The 5-Step <span className="gradient-text">SamoTech Engine</span>
           </h2>
           <p className="text-muted-foreground text-center max-w-xl mx-auto mb-14">
             Every step is designed to maximize ROI and minimize ad spend waste.

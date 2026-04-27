@@ -6,7 +6,7 @@ const services = [
   {
     icon: Megaphone,
     title: "Advertisement",
-    description: "End-to-end growth engine — from market research to lead generation on Meta platforms.",
+    description: "End-to-end SamoTech engine — from market research to lead generation on Meta platforms.",
     className: "md:col-span-2 md:row-span-1",
     link: "/advertisement",
   },
@@ -40,7 +40,7 @@ const services = [
   },
   {
     icon: TrendingUp,
-    title: "SEO & Growth",
+    title: "SEO & SamoTech",
     description: "Data-driven strategies to dominate search results and scale your digital presence.",
     className: "md:col-span-1 md:row-span-1",
     link: "/workflow",

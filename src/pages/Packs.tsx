@@ -50,9 +50,9 @@ const Packs = () => {
       ]
     },
     {
-      id: "growth",
-      title: t("pack.growth.title"),
-      desc: t("pack.growth.desc"),
+      id: "expansion",
+      title: t("pack.expansion.title"),
+      desc: t("pack.expansion.desc"),
       icon: Users,
       color: "from-pink-500 to-rose-500",
       features: [

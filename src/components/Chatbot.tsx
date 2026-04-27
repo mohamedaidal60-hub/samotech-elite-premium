@@ -42,7 +42,7 @@ const Chatbot = () => {
       const lowInput = input.toLowerCase();
 
       if (lowInput.includes("pack") || lowInput.includes("prix") || lowInput.includes("offre")) {
-        response = "Nous avons plusieurs offres d'élite : le Pack SamoTech (le plus complet), le Pack Visibilité, et le Pack Growth UGC. Lequel correspond le mieux à vos objectifs actuels ?";
+        response = "Nous avons plusieurs offres d'élite : le Pack SamoTech (le plus complet), le Pack Visibilité, et le Pack SamoTech UGC. Lequel correspond le mieux à vos objectifs actuels ?";
       } else if (lowInput.includes("pub") || lowInput.includes("meta") || lowInput.includes("facebook")) {
         response = "Nos experts Meta Ads gèrent des budgets de plusieurs millions de DZD. Nous optimisons chaque centime pour un ROI maximal. Souhaitez-vous une analyse de vos campagnes actuelles ?";
       } else if (lowInput.includes("site") || lowInput.includes("dev") || lowInput.includes("web")) {

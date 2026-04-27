@@ -55,7 +55,7 @@ const Home: React.FC = () => {
           </h1>
           <p className="text-slate-400 mt-2 flex items-center gap-2">
             <Activity size={16} className="text-blue-500" />
-            Voici l'état actuel de Growth Partners Call Centers.
+            Voici l'état actuel de SamoTech Partners Call Centers.
           </p>
         </div>
         <div className="flex items-center gap-3">

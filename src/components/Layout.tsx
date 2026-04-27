@@ -54,7 +54,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ShieldCheck className="text-white" size={24} />
           </div>
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-white">GROWTH <span className="text-cyan-400">PARTNERS</span></h1>
+            <h1 className="text-xl font-bold tracking-tight text-white">SamoTech <span className="text-cyan-400">PARTNERS</span></h1>
             <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold">ERP Elite Platform</p>
           </div>
         </div>
@@ -189,7 +189,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                   <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
                     <ShieldCheck className="text-white" size={18} />
                   </div>
-                  <h1 className="text-lg font-bold text-white">GROWTH <span className="text-cyan-400">PARTNERS</span></h1>
+                  <h1 className="text-lg font-bold text-white">SamoTech <span className="text-cyan-400">PARTNERS</span></h1>
                 </div>
                 <button onClick={() => setIsMobileMenuOpen(false)} className="text-slate-400 hover:text-white">
                   <X size={24} />

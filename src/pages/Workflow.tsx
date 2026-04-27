@@ -8,7 +8,7 @@ const steps = [
   { icon: Palette, title: "Art Direction & Design", description: "Develop stunning visual assets with a cohesive aesthetic that elevates your brand identity." },
   { icon: Video, title: "Production & Execution", description: "Bring concepts to life with professional video, photography, and digital asset creation." },
   { icon: BarChart3, title: "Optimization & Testing", description: "Refine content for platform algorithms, A/B test creatives, and maximize performance." },
-  { icon: Rocket, title: "Launch & Scale", description: "Deploy campaigns, monitor results in real-time, and scale what works for exponential growth." },
+  { icon: Rocket, title: "Launch & Scale", description: "Deploy campaigns, monitor results in real-time, and scale what works for exponential SamoTech." },
 ];
 
 import WorkflowNodesBackground from "@/components/backgrounds/WorkflowNodesBackground";
@@ -25,7 +25,7 @@ const Workflow = () => {
             Our <span className="gradient-text">Workflow</span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            From research to results — how we transform insights into visual narratives that drive growth.
+            From research to results — how we transform insights into visual narratives that drive SamoTech.
           </p>
         </div>
 

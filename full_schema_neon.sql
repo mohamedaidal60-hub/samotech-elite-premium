@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS order_assets (
 INSERT INTO packs (name, description, category, features) VALUES 
 ('Pack SamoTech', 'Le pack ultime pour lancer votre marque avec impact.', 'marketing', '["Meta Page Creation", "5000 Followers", "5000 Likes", "Logo Design", "Creative Video", "5 Days Sponsoring"]'),
 ('Pack Visibilité', 'Maximisez votre portée sur les réseaux sociaux.', 'marketing', '["10 Days Sponsoring", "Audience Management", "3 Ad Videos"]'),
-('Pack Growth UGC', 'Puissance des créateurs de contenu.', 'marketing', '["UGC Videos", "Model Shooting", "Market Study Scripts", "Official US Ad Account"]'),
+('Pack SamoTech UGC', 'Puissance des créateurs de contenu.', 'marketing', '["UGC Videos", "Model Shooting", "Market Study Scripts", "Official US Ad Account"]'),
 ('Pack Corporate Elite', 'Solution complète dev + marketing.', 'development', '["Premium Website", "Full SEO", "SamoTech Pack included", "1 Year Maintenance"]');
 
 -- INDEXES

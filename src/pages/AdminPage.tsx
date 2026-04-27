@@ -105,7 +105,7 @@ const AdminPage: React.FC = () => {
 
   const handleSendBroadcast = () => {
     if (!broadcast) return;
-    alert("Message diffusé à tous les collaborateurs de Growth Partners !");
+    alert("Message diffusé à tous les collaborateurs de SamoTech Partners !");
     setBroadcast('');
   };
 

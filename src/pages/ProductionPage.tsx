@@ -41,7 +41,7 @@ const ProductionPage: React.FC = () => {
         setAudioLevels(Array(30).fill(0).map(() => Math.max(10, Math.random() * 100)));
         if (Math.random() > 0.8) {
           const phrases = [
-            "Bonjour, ici le service client Growth Partners.",
+            "Bonjour, ici le service client SamoTech Partners.",
             "Je vous appelle concernant votre demande de devis.",
             "Nous avons une offre exceptionnelle pour vous aujourd'hui.",
             "Est-ce que vous m'entendez bien ?",
@@ -110,7 +110,7 @@ const ProductionPage: React.FC = () => {
              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
                 <PhoneCall className="text-white" size={24} />
              </div>
-             PROD <span className="premium-gradient-text uppercase">Growth Suite</span>
+             PROD <span className="premium-gradient-text uppercase">SamoTech Suite</span>
           </h1>
           <p className="text-slate-500 text-sm mt-2 ml-1 flex items-center gap-2 font-medium tracking-wide">
              <Volume2 size={16} className="text-blue-500 animate-pulse" />

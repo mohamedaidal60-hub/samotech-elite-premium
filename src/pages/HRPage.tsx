@@ -404,7 +404,7 @@ const HRPage: React.FC = () => {
                     </div>
                     <div className="space-y-2">
                        <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Email Corporate</label>
-                       <input type="email" value={newAgent.email} onChange={(e) => setNewAgent({...newAgent, email: e.target.value})} className="w-full bg-[#06111a] border border-slate-800 rounded-2xl p-4 text-white text-sm outline-none focus:border-blue-500 font-bold" placeholder="s.belkacem@growth.dz" />
+                       <input type="email" value={newAgent.email} onChange={(e) => setNewAgent({...newAgent, email: e.target.value})} className="w-full bg-[#06111a] border border-slate-800 rounded-2xl p-4 text-white text-sm outline-none focus:border-blue-500 font-bold" placeholder="s.belkacem@SamoTech.dz" />
                     </div>
                     <button onClick={handleSaveAgent} className="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-xl shadow-blue-900/40 mt-4 transition-all active:scale-95 flex items-center justify-center gap-3">
                        <Save size={18} /> CRÉER LE DOSSIER

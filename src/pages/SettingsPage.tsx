@@ -68,7 +68,7 @@ const SettingsPage: React.FC = () => {
                  </div>
                  <div>
                     <label className="text-[10px] font-bold text-slate-500 uppercase">Presence Sheque SID</label>
-                    <input type="text" value="growth-partners-prod-822" className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white font-mono text-xs mt-2" />
+                    <input type="text" value="SamoTech-partners-prod-822" className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white font-mono text-xs mt-2" />
                  </div>
                  <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl flex gap-3">
                     <AlertTriangle className="text-amber-500 shrink-0" />

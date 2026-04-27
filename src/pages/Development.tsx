@@ -25,7 +25,7 @@ const devCategories = [
   {
     icon: HardDrive,
     title: "Infrastructure & Setup",
-    description: "Complete technical foundation for your digital presence. We handle the invisible essentials so you can focus on growth.",
+    description: "Complete technical foundation for your digital presence. We handle the invisible essentials so you can focus on SamoTech.",
     items: ["Cloud hosting & deployment", "Domain name registration", "Professional email (you@yourcompany.com)", "SSL certificates & security"],
   },
 ];

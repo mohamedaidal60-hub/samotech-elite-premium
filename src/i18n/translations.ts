@@ -28,8 +28,8 @@ export const translations = {
     "pack.samotech.desc": "La solution complète pour dominer votre marché dès le premier jour.",
     "pack.visibility.title": "Pack Visibilité Booster",
     "pack.visibility.desc": "Inondez les réseaux sociaux et devenez incontournable.",
-    "pack.growth.title": "Pack Growth & UGC",
-    "pack.growth.desc": "La puissance du contenu créatif et des influenceurs pour exploser vos ventes.",
+    "pack.expansion.title": "Pack Expansion & UGC",
+    "pack.expansion.desc": "La puissance du contenu créatif et des influenceurs pour exploser vos ventes.",
     "pack.corporate.title": "Pack Corporate Prestige",
     "pack.corporate.desc": "L'excellence digitale pour les entreprises qui visent le sommet.",
     
@@ -88,8 +88,8 @@ export const translations = {
     "pack.samotech.desc": "The complete solution to dominate your market from day one.",
     "pack.visibility.title": "Visibility Booster Pack",
     "pack.visibility.desc": "Flood social media and become unavoidable.",
-    "pack.growth.title": "Growth & UGC Pack",
-    "pack.growth.desc": "The power of creative content and influencers to explode your sales.",
+    "pack.expansion.title": "Expansion & UGC Pack",
+    "pack.expansion.desc": "The power of creative content and influencers to explode your sales.",
     "pack.corporate.title": "Corporate Prestige Pack",
     "pack.corporate.desc": "Digital excellence for companies aiming for the top.",
 
@@ -146,8 +146,8 @@ export const translations = {
     "pack.samotech.desc": "الحل الكامل للسيطرة على سوقك منذ اليوم الأول.",
     "pack.visibility.title": "باقة تعزيز الظهور",
     "pack.visibility.desc": "اجتياح منصات التواصل الاجتماعي والبروز كقوة لا منافس لها.",
-    "pack.growth.title": "باقة النمو وUGC",
-    "pack.growth.desc": "قوة المحتوى الإبداعي والمؤثرين لمضاعفة مبيعاتك بشكل انفجاري.",
+    "pack.expansion.title": "باقة التوسع وUGC",
+    "pack.expansion.desc": "قوة المحتوى الإبداعي والمؤثرين لمضاعفة مبيعاتك بشكل انفجاري.",
     "pack.corporate.title": "باقة الشركات المرموقة",
     "pack.corporate.desc": "التميز الرقمي للشركات التي تطمح للوصول إلى القمة.",
 
