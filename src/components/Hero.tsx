@@ -2,7 +2,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Sparkles, ShieldCheck, Zap } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link } from "react-router-dom";
-import heroBg from "/C:/Users/PC/.gemini/antigravity/brain/b843c00a-0ebd-45a7-a227-1511f98db8d6/samotech_hero_bg_1777282702165.png";
+import heroBg from "@/assets/hero-bg.png";
 
 const Hero = () => {
   const { t, dir } = useLanguage();
