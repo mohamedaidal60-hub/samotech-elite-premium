@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Bot, User, Send, RotateCcw, CheckCircle2, Edit3, MessageCircle } from "lucide-react";
+import { Bot, User, Send, RotateCcw, CheckCircle2, Edit3, MessageCircle, Mic, Square } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { insertLead } from "@/lib/api";
@@ -35,6 +35,8 @@ const AIAssistant = () => {
     timeline: "",
     project_summary: "",
   });
+  const [isRecording, setIsRecording] = useState(false);
+  const recognitionRef = useRef<any>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,6 +50,40 @@ const AIAssistant = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
+
+  const toggleRecording = () => {
+    if (isRecording) {
+      recognitionRef.current?.stop();
+      setIsRecording(false);
+      return;
+    }
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast({
+        title: "Non supporté",
+        description: "Votre navigateur ne supporte pas la reconnaissance vocale.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = language === "ar" ? "ar-DZ" : language === "en" ? "en-US" : "fr-FR";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => setIsRecording(true);
+    recognition.onend = () => setIsRecording(false);
+    recognition.onerror = () => setIsRecording(false);
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setInput((prev) => (prev ? `${prev} ${transcript}` : transcript));
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  };
 
   const send = async () => {
     if (!input.trim() || thinking) return;
@@ -278,6 +314,15 @@ const AIAssistant = () => {
             placeholder={t("ai.placeholder")}
             disabled={thinking}
           />
+          <button
+            onClick={toggleRecording}
+            className={`p-2.5 rounded-lg transition-all ${
+              isRecording ? "bg-destructive text-destructive-foreground animate-pulse" : "glass-card text-foreground hover:bg-accent"
+            }`}
+            title="Enregistrer un message vocal"
+          >
+            {isRecording ? <Square size={16} /> : <Mic size={16} />}
+          </button>
           <button
             onClick={send}
             disabled={thinking || !input.trim()}

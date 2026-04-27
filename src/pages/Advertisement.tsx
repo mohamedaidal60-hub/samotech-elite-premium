@@ -2,7 +2,7 @@ import { Search, Mic, Film, Palette, Rocket, ArrowRight, TrendingDown, DollarSig
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import LightTunnelBackground from "@/components/backgrounds/LightTunnelBackground";
+import AdParticlesBackground from "@/components/backgrounds/AdParticlesBackground";
 
 const adSteps = [
   {
@@ -54,7 +54,7 @@ const Advertisement = () => {
 
   return (
     <main ref={ref} className="pt-24 pb-16 relative">
-      <LightTunnelBackground />
+      <AdParticlesBackground />
       <div className="container mx-auto px-6 relative z-10">
         {/* Hero */}
         <div className="text-center mb-24 animate-scroll-fade">

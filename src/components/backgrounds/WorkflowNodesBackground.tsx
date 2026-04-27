@@ -27,8 +27,9 @@ const WorkflowNodesBackground = () => {
     resize();
     window.addEventListener("resize", resize);
 
-    const magenta = [200, 60, 200];
-    const cyan = [0, 200, 220];
+    const magenta = [255, 0, 255];
+    const cyan = [0, 255, 255];
+    const blue = [0, 128, 255];
 
     const nodes: Node[] = [];
     const count = 30;
@@ -36,8 +37,8 @@ const WorkflowNodesBackground = () => {
       nodes.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
+        vx: (Math.random() - 0.5) * 0.15, // Slower
+        vy: (Math.random() - 0.5) * 0.15, // Slower
         radius: 2 + Math.random() * 3,
         phase: Math.random() * Math.PI * 2,
         connections: [],

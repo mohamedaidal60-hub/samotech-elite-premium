@@ -29,7 +29,7 @@ const LightTunnelBackground = () => {
     ];
 
     let drawProgress = 0;
-    const drawSpeed = 0.006;
+    const drawSpeed = 0.003; // Slower
     let fadeAlpha = 1;
     let fading = false;
 
@@ -46,33 +46,16 @@ const LightTunnelBackground = () => {
       const angle = (Math.random() - 0.5) * Math.PI * 2;
       trails.push({
         angle,
-        speed: 0.5 + Math.random() * 2,
+        speed: 0.2 + Math.random() * 0.8, // Slower lines
         length: 80 + Math.random() * 200,
         offset: Math.random() * 1000,
         color: Math.random() > 0.5
-          ? `hsla(${300 + Math.random() * 20}, 100%, 60%, ${0.08 + Math.random() * 0.12})`
-          : `hsla(${180 + Math.random() * 20}, 100%, 60%, ${0.08 + Math.random() * 0.12})`,
+          ? `hsla(295, 100%, 50%, ${0.08 + Math.random() * 0.12})` // Magenta
+          : `hsla(185, 100%, 50%, ${0.08 + Math.random() * 0.12})`, // Cyan
       });
     }
 
-    // Dollar signs
-    interface Dollar {
-      x: number;
-      y: number;
-      speed: number;
-      size: number;
-      opacity: number;
-    }
-    const dollars: Dollar[] = [];
-    for (let i = 0; i < 10; i++) {
-      dollars.push({
-        x: Math.random() * 2000,
-        y: -Math.random() * 2000,
-        speed: 2.5 + Math.random() * 3.5,
-        size: 50 + Math.random() * 60,
-        opacity: 0.12 + Math.random() * 0.2,
-      });
-    }
+    const dollars: any[] = []; // Removed dollar rain
 
     const animate = (time: number) => {
       const W = canvas.width;
@@ -137,11 +120,11 @@ const LightTunnelBackground = () => {
       if (pts.length > 1) {
         // Neon glow layers (outer bloom → inner core)
         const layers = [
-          { blur: 60, alpha: 0.12, width: 28, color: "0, 255, 100" },
-          { blur: 30, alpha: 0.25, width: 16, color: "0, 255, 100" },
-          { blur: 12, alpha: 0.5, width: 8, color: "50, 255, 120" },
-          { blur: 4, alpha: 0.85, width: 4, color: "120, 255, 160" },
-          { blur: 0, alpha: 1, width: 2, color: "200, 255, 220" },
+          { blur: 60, alpha: 0.12, width: 28, color: "255, 0, 255" }, // Magenta glow
+          { blur: 30, alpha: 0.25, width: 16, color: "0, 255, 255" }, // Cyan core
+          { blur: 12, alpha: 0.5, width: 8, color: "0, 128, 255" },   // Blue core
+          { blur: 4, alpha: 0.85, width: 4, color: "200, 255, 255" },
+          { blur: 0, alpha: 1, width: 2, color: "255, 255, 255" },
         ];
 
         for (const l of layers) {
@@ -188,9 +171,9 @@ const LightTunnelBackground = () => {
           const angle = Math.atan2(tip.y - prev.y, tip.x - prev.x);
           const aLen = 18;
           ctx.save();
-          ctx.shadowColor = "rgba(0, 255, 100, 0.8)";
+          ctx.shadowColor = "rgba(0, 255, 255, 0.8)";
           ctx.shadowBlur = 20;
-          ctx.fillStyle = "rgba(100, 255, 150, 0.9)";
+          ctx.fillStyle = "rgba(0, 255, 255, 0.9)";
           ctx.beginPath();
           ctx.moveTo(tip.x + Math.cos(angle) * aLen, tip.y + Math.sin(angle) * aLen);
           ctx.lineTo(tip.x + Math.cos(angle + 2.5) * aLen * 0.7, tip.y + Math.sin(angle + 2.5) * aLen * 0.7);
@@ -203,29 +186,7 @@ const LightTunnelBackground = () => {
 
       ctx.restore(); // end fadeAlpha
 
-      // --- Dollar rain ---
-      for (const d of dollars) {
-        d.y += d.speed;
-        if (d.y > H + d.size) {
-          d.y = -d.size - Math.random() * 400;
-          d.x = Math.random() * W;
-        }
-        ctx.save();
-        // Motion blur trails
-        for (let t = 3; t >= 0; t--) {
-          const ty = d.y - t * d.speed * 4;
-          const ta = d.opacity * (1 - t * 0.28);
-          if (ta <= 0) continue;
-          ctx.shadowColor = `rgba(0, 255, 80, ${ta * 0.4})`;
-          ctx.shadowBlur = 6 + t * 5;
-          ctx.fillStyle = `rgba(0, 255, 80, ${ta})`;
-          ctx.font = `900 ${d.size}px "Inter", system-ui, sans-serif`;
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText("$", d.x, ty);
-        }
-        ctx.restore();
-      }
+      // --- Removed dollar rain ---
 
       animRef.current = requestAnimationFrame(animate);
     };

@@ -35,13 +35,13 @@ const MatrixBackground = () => {
         const char = chars[Math.floor(Math.random() * chars.length)];
         const y = drops[i] * fontSize;
         
-        // Gradient from cyan (top) to magenta (bottom)
+        // Gradient from cyan to magenta based on progress
         const progress = (y % canvas.height) / canvas.height;
-        const r = Math.floor(0 + 200 * progress);
-        const g = Math.floor(200 - 140 * progress);
-        const b = Math.floor(220 - 20 * progress + 0 * progress);
+        const r = Math.floor(0 + (255 - 0) * progress);
+        const g = Math.floor(255 + (0 - 255) * progress);
+        const b = Math.floor(255 + (255 - 255) * progress);
 
-        const opacity = 0.3 + Math.random() * 0.5;
+        const opacity = 0.25 + Math.random() * 0.45;
         ctx.fillStyle = `rgba(${r},${g},${b},${opacity})`;
         ctx.font = `${fontSize}px monospace`;
         ctx.fillText(char, i * fontSize, y);

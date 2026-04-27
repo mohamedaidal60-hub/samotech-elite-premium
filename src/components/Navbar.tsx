@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Sun, Moon, Globe } from "lucide-react";
+import { motion } from "framer-motion";
 import logo from "@/assets/samotech-logo.png";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -20,10 +21,11 @@ const Navbar = () => {
 
   const navLinks = [
     { to: "/", label: t("nav.home") },
+    { to: "/packs", label: t("nav.packs") },
     { to: "/advertisement", label: t("nav.advertisement") },
     { to: "/development", label: t("nav.development") },
     { to: "/automation", label: t("nav.automation") },
-    { to: "/workflow", label: t("nav.workflow") },
+    { to: "/dashboard", label: t("nav.dashboard") },
     { to: "/contact", label: t("nav.contact") },
   ];
 
@@ -53,13 +55,27 @@ const Navbar = () => {
     >
       <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 py-3">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
-          <img
-            src={logo}
-            alt="SamoTech"
-            className="h-9 w-9 object-contain transition-transform group-hover:scale-110"
-          />
-          <span className="text-lg sm:text-xl font-bold gradient-text whitespace-nowrap">
+        <Link to="/" className="flex items-center gap-3 shrink-0 group">
+          <motion.div
+            animate={{ 
+              rotate: [0, 5, -5, 0],
+              scale: [1, 1.05, 1]
+            }}
+            transition={{ 
+              duration: 4, 
+              repeat: Infinity, 
+              ease: "easeInOut" 
+            }}
+            className="relative"
+          >
+            <div className="absolute inset-0 bg-primary/20 blur-lg rounded-full animate-pulse" />
+            <img
+              src={logo}
+              alt="SamoTech"
+              className="h-10 w-10 object-contain relative z-10"
+            />
+          </motion.div>
+          <span className="text-xl font-black gradient-text tracking-tighter">
             SamoTech
           </span>
         </Link>

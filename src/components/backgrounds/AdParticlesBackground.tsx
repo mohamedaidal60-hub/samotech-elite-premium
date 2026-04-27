@@ -25,24 +25,25 @@ const AdParticlesBackground = () => {
 
     const resize = () => {
       canvas.width = window.innerWidth;
-      canvas.height = document.body.scrollHeight;
+      canvas.height = window.innerHeight;
     };
     resize();
     window.addEventListener("resize", resize);
 
     const types: FloatingItem["type"][] = ["arrow", "chart", "dollar", "sale", "leads"];
     const items: FloatingItem[] = [];
-    for (let i = 0; i < 20; i++) {
+    const count = 60; 
+    for (let i = 0; i < count; i++) {
       items.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: -(0.15 + Math.random() * 0.35), // drift upward
-        size: 18 + Math.random() * 22,
-        opacity: 0.07 + Math.random() * 0.12,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: -(0.5 + Math.random() * 1.2), // faster drift upward
+        size: 20 + Math.random() * 25,
+        opacity: 0.15 + Math.random() * 0.25, // more visible
         type: types[i % types.length],
-        rotation: (Math.random() - 0.5) * 0.3,
-        rotationSpeed: (Math.random() - 0.5) * 0.003,
+        rotation: (Math.random() - 0.5) * 0.4,
+        rotationSpeed: (Math.random() - 0.5) * 0.005,
         glowPhase: Math.random() * Math.PI * 2,
       });
     }
@@ -64,10 +65,10 @@ const AdParticlesBackground = () => {
       ctx.rotate(item.rotation);
 
       const glow = 0.5 + 0.5 * Math.sin(time * 0.001 + item.glowPhase);
-      const { r, g, b, color } = getColor(item, time, glow * 0.06);
+      const { r, g, b, color } = getColor(item, time, glow * 0.12);
 
-      ctx.shadowColor = `rgba(${r},${g},${b},${glow * 0.5})`;
-      ctx.shadowBlur = 18 + glow * 14;
+      ctx.shadowColor = `rgba(${r},${g},${b},${glow * 0.8})`;
+      ctx.shadowBlur = 25 + glow * 20;
       ctx.fillStyle = color;
       ctx.strokeStyle = color;
       ctx.lineWidth = 2;

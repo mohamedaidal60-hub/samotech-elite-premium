@@ -1,99 +1,147 @@
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
-import ParallaxBackground from "@/components/backgrounds/ParallaxBackground";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { ArrowRight, Sparkles, Megaphone, Code, Settings, Workflow } from "lucide-react";
+import { ArrowRight, Sparkles, ChevronDown } from "lucide-react";
+import { useRef } from "react";
 
 const Hero = () => {
-  const ref = useScrollReveal<HTMLDivElement>();
-  const { t } = useLanguage();
+  const { t, dir } = useLanguage();
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
 
-  const services = [
-    { icon: Megaphone, label: t("nav.advertisement") },
-    { icon: Code, label: t("nav.development") },
-    { icon: Settings, label: t("nav.automation") },
-    { icon: Workflow, label: t("nav.workflow") }
-  ];
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   return (
-    <section ref={ref} className="relative min-h-screen flex items-center overflow-hidden pt-24 pb-12 cosmic-bg">
-      <ParallaxBackground />
+    <section 
+      ref={containerRef}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-12 cosmic-bg"
+    >
+      {/* Dynamic Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.2, 1],
+            rotate: [0, 90, 0],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] rounded-full bg-primary/10 blur-[120px]" 
+        />
+        <motion.div 
+          animate={{ 
+            scale: [1.2, 1, 1.2],
+            rotate: [0, -90, 0],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="absolute -bottom-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-secondary/10 blur-[100px]" 
+        />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
+      </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-5xl mx-auto text-center">
           
-          {/* Left Column: Text Content */}
-          <div className="text-left max-w-2xl">
-            <div className="animate-scroll-fade">
-              <span className="inline-flex items-center gap-2 glass-card px-4 py-2 text-xs font-medium tracking-widest uppercase text-foreground/80 mb-6">
-                <Sparkles size={13} className="text-accent" />
-                {t("hero.badge")}
-              </span>
-            </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <span className="inline-flex items-center gap-2 glass-card px-5 py-2.5 rounded-full text-xs font-bold tracking-[0.2em] uppercase text-primary mb-10 border-primary/20 shadow-glow">
+              <Sparkles size={14} className="animate-pulse" />
+              {t("hero.badge")}
+            </span>
+          </motion.div>
 
-            <h1 className="animate-scroll-fade text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-6" style={{ transitionDelay: "0.1s" }}>
-              {t("hero.title1")}{" "}
-              <span className="gradient-text">{t("hero.title2")}</span>
-              <br />
-              {t("hero.title3")} <span className="gradient-text">{t("hero.title4")}</span>
-            </h1>
+          <motion.h1 
+            style={{ y: y1 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-[0.9] tracking-tight mb-10"
+          >
+            <span className="block">{t("hero.title1")}</span>
+            <span className="gradient-text drop-shadow-[0_0_30px_hsla(var(--primary),0.3)]">
+              {t("hero.title2")}
+            </span>
+            <span className="block mt-4">{t("hero.title3")} <span className="text-foreground/40">{t("hero.title4")}</span></span>
+          </motion.h1>
 
-            <p className="animate-scroll-fade text-lg md:text-xl text-muted-foreground mb-8" style={{ transitionDelay: "0.2s" }}>
-              {t("hero.subtitle")}
-            </p>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="text-lg md:text-2xl text-muted-foreground/80 max-w-3xl mx-auto mb-12 leading-relaxed"
+          >
+            {t("hero.subtitle")}
+          </motion.p>
 
-            <div className="animate-scroll-fade flex flex-wrap gap-3 mb-10" style={{ transitionDelay: "0.3s" }}>
-              {services.map((S, idx) => (
-                <div key={idx} className="flex items-center gap-2 glass-card px-4 py-2 rounded-full text-sm font-medium">
-                  <S.icon size={16} className="text-primary" />
-                  <span>{S.label}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="animate-scroll-fade flex flex-col sm:flex-row gap-4" style={{ transitionDelay: "0.4s" }}>
-              <Link
-                to="/contact"
-                className="gradient-bg px-8 py-4 rounded-xl text-base font-semibold text-primary-foreground hover:opacity-90 transition-all hover:scale-105 inline-flex items-center justify-center gap-2 group"
-              >
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-6"
+          >
+            <Link
+              to="/packs"
+              className="group relative px-10 py-5 rounded-2xl overflow-hidden shadow-premium hover:shadow-glow transition-all duration-500 hover:scale-105"
+            >
+              <div className="absolute inset-0 gradient-bg transition-transform duration-500 group-hover:scale-110" />
+              <div className="relative flex items-center gap-3 text-lg font-bold text-primary-foreground">
                 {t("hero.cta.start")}
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                to="/workflow"
-                className="glass-card-glow px-8 py-4 rounded-xl text-base font-semibold text-foreground hover:scale-105 transition-all text-center"
-              >
-                {t("hero.cta.learn")}
-              </Link>
-            </div>
-          </div>
-
-          {/* Right Column: Image/Visual */}
-          <div className="animate-scroll-fade relative hidden lg:block" style={{ transitionDelay: "0.3s" }}>
-            <div className="relative rounded-3xl overflow-hidden glass-card-glow p-2 shadow-elegant animate-float">
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-accent/20 z-10 pointer-events-none rounded-3xl" />
-              <img 
-                src="/hero_img.png" 
-                alt="SamoTech Workflow & Tech" 
-                className="w-full h-auto rounded-2xl object-cover relative z-0"
-              />
-              
-              {/* Floating elements overlaying image */}
-              <div className="absolute -left-6 top-10 glass-card p-4 rounded-xl z-20 flex items-center gap-3 animate-float-slow">
-                <div className="w-10 h-10 rounded-full gradient-bg flex items-center justify-center">
-                  <Workflow size={20} className="text-primary-foreground" />
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground font-semibold">Workflow</div>
-                  <div className="text-sm font-bold">100% Automatisé</div>
-                </div>
+                <ArrowRight size={22} className={`transition-transform duration-500 ${dir === 'rtl' ? 'group-hover:-translate-x-2 rotate-180' : 'group-hover:translate-x-2'}`} />
               </div>
-              
-            </div>
-          </div>
-
+            </Link>
+            
+            <Link
+              to="/workflow"
+              className="glass-card-glow px-10 py-5 rounded-2xl text-lg font-bold text-foreground hover:scale-105 transition-all duration-500 border-white/5"
+            >
+              {t("hero.cta.learn")}
+            </Link>
+          </motion.div>
         </div>
       </div>
+
+      {/* Floating UI Elements Decor */}
+      <div className="absolute inset-0 pointer-events-none hidden lg:block">
+        <motion.div 
+          animate={{ y: [0, -20, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[20%] left-[5%] glass-card p-6 rounded-3xl border-primary/20 rotate-[-10deg] shadow-glow"
+        >
+          <div className="w-12 h-1 bg-primary rounded-full mb-3" />
+          <div className="w-24 h-1 bg-muted rounded-full mb-3" />
+          <div className="w-16 h-1 bg-muted rounded-full" />
+        </motion.div>
+
+        <motion.div 
+          animate={{ y: [0, 20, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute bottom-[25%] right-[8%] glass-card p-6 rounded-3xl border-secondary/20 rotate-[12deg] shadow-glow"
+        >
+          <div className="flex gap-2 mb-4">
+            <div className="w-3 h-3 rounded-full bg-red-500/50" />
+            <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
+            <div className="w-3 h-3 rounded-full bg-green-500/50" />
+          </div>
+          <div className="w-32 h-20 rounded-xl bg-secondary/5 border border-secondary/10 flex items-center justify-center">
+            <Sparkles size={24} className="text-secondary" />
+          </div>
+        </motion.div>
+      </div>
+
+      <motion.div 
+        style={{ opacity }}
+        animate={{ y: [0, 10, 0] }}
+        transition={{ duration: 2, repeat: Infinity }}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground"
+      >
+        <span className="text-[10px] uppercase tracking-[0.3em] font-bold">Scroll</span>
+        <ChevronDown size={20} />
+      </motion.div>
     </section>
   );
 };
