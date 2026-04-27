@@ -60,8 +60,8 @@ const Services = () => {
               transition={{ delay: idx * 0.1 }}
               className="group relative h-full"
             >
-              <Link to={s.link} className="block h-full">
-                <div className="glass-card-glow p-8 rounded-[2rem] border-white/5 h-full flex flex-col group-hover:border-primary/40 transition-all duration-500">
+              <Link to={s.link} className="block h-full animate-reveal" style={{ animationDelay: `${idx * 0.15}s` }}>
+                <div className="glass-card-glow p-8 rounded-[2rem] border-white/5 h-full flex flex-col group-hover:border-primary/40 transition-all duration-500 hover-tilt">
                   <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
                     <s.icon size={28} className="text-white" />
                   </div>
