@@ -12,6 +12,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import LightTunnelBackground from "@/components/backgrounds/LightTunnelBackground";
 
 const Packs = () => {
   const { t, dir } = useLanguage();
@@ -107,7 +108,8 @@ const Packs = () => {
   ];
 
   return (
-    <div className="min-h-screen pt-32 pb-20 cosmic-bg">
+    <div className="min-h-screen pt-32 pb-20 cosmic-bg relative overflow-hidden">
+      <LightTunnelBackground />
       <div className="container mx-auto px-6">
         
         {/* Header */}

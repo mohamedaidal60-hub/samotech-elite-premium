@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
-import { Star, Quote } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 
 const testimonials = [
   {
@@ -23,47 +24,85 @@ const testimonials = [
 ];
 
 const Testimonials = () => {
-  return (
-    <section className="py-24 relative overflow-hidden bg-white/[0.02]">
-      <div className="container mx-auto px-6">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="text-center mb-20"
-        >
-          <div className="inline-flex items-center gap-1 text-yellow-500 mb-4">
-            {[...Array(5)].map((_, i) => <Star key={i} size={18} fill="currentColor" />)}
-          </div>
-          <h2 className="text-3xl md:text-5xl font-black mb-6">Ce que disent <span className="gradient-text">nos clients</span></h2>
-          <p className="text-muted-foreground">Des résultats concrets pour des entrepreneurs ambitieux.</p>
-        </motion.div>
+  const [index, setIndex] = useState(0);
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((t, idx) => (
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const next = () => setIndex((prev) => (prev + 1) % testimonials.length);
+  const prev = () => setIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+
+  return (
+    <section className="py-32 relative overflow-hidden bg-black/40">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-3xl md:text-5xl font-black mb-6"
+          >
+            Ils nous font <span className="gradient-text">confiance</span>
+          </motion.h2>
+        </div>
+
+        <div className="relative max-w-4xl mx-auto">
+          <AnimatePresence mode="wait">
             <motion.div
-              key={idx}
-              initial={{ opacity: 0, x: idx % 2 === 0 ? -20 : 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className="glass-card p-10 rounded-[2.5rem] relative group border-white/5"
+              key={index}
+              initial={{ opacity: 0, x: 50, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -50, scale: 0.9 }}
+              transition={{ duration: 0.6, ease: "circOut" }}
+              className="glass-card-glow p-10 md:p-20 rounded-[3rem] border-white/10 relative text-center"
             >
-              <Quote className="absolute top-6 right-6 text-primary/10 group-hover:text-primary/30 transition-colors" size={40} />
+              <Quote className="absolute top-10 left-10 text-primary/20" size={60} />
               
-              <div className="flex items-center gap-4 mb-6">
-                <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full border-2 border-primary/20 p-0.5" />
-                <div>
-                  <h4 className="font-bold text-foreground">{t.name}</h4>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{t.role}</p>
-                </div>
+              <div className="inline-flex items-center gap-1 text-yellow-500 mb-8">
+                {[...Array(5)].map((_, i) => <Star key={i} size={20} fill="currentColor" />)}
               </div>
 
-              <p className="text-muted-foreground italic leading-relaxed text-sm">
-                "{t.text}"
+              <p className="text-xl md:text-3xl text-white/90 font-medium leading-relaxed italic mb-12">
+                "{testimonials[index].text}"
               </p>
+
+              <div className="flex flex-col items-center">
+                <img 
+                  src={testimonials[index].avatar} 
+                  alt={testimonials[index].name} 
+                  className="w-16 h-16 rounded-full border-2 border-primary mb-4" 
+                />
+                <h4 className="text-xl font-bold">{testimonials[index].name}</h4>
+                <p className="text-xs uppercase tracking-widest text-primary font-black">{testimonials[index].role}</p>
+              </div>
             </motion.div>
-          ))}
+          </AnimatePresence>
+
+          {/* Navigation */}
+          <div className="absolute top-1/2 -translate-y-1/2 -left-6 md:-left-12">
+            <button onClick={prev} className="w-12 h-12 rounded-full glass-card border-white/20 flex items-center justify-center hover:bg-white/10 transition-all">
+              <ChevronLeft size={24} />
+            </button>
+          </div>
+          <div className="absolute top-1/2 -translate-y-1/2 -right-6 md:-right-12">
+            <button onClick={next} className="w-12 h-12 rounded-full glass-card border-white/20 flex items-center justify-center hover:bg-white/10 transition-all">
+              <ChevronRight size={24} />
+            </button>
+          </div>
+
+          {/* Indicators */}
+          <div className="flex justify-center gap-3 mt-10">
+            {testimonials.map((_, i) => (
+              <button 
+                key={i} 
+                onClick={() => setIndex(i)}
+                className={`h-2 rounded-full transition-all duration-500 ${i === index ? 'w-8 bg-primary' : 'w-2 bg-white/20'}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

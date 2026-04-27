@@ -1,72 +1,63 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animRef = useRef<number>(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const resize = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>[]{}/\\|!@#$%^&*()_+-=";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops: number[] = [];
+
+    for (let i = 0; i < columns; i++) {
+      drops[i] = 1;
+    }
+
+    const draw = () => {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#47bfff"; // Cyan from logo
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = characters.charAt(Math.floor(Math.random() * characters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    };
+
+    const interval = setInterval(draw, 33);
+
+    const handleResize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
-    resize();
-    window.addEventListener("resize", resize);
 
-    const fontSize = 14;
-    const chars = "01{}[]()<>=;:const let var function return import export async await if else for while class new this => + - * / % & | ^ ~ ! ? . , # @ $ _".split("");
-    let columns = Math.floor(canvas.width / fontSize);
-    let drops = new Array(columns).fill(0).map(() => Math.random() * -100);
-
-    window.addEventListener("resize", () => {
-      columns = Math.floor(canvas.width / fontSize);
-      drops = new Array(columns).fill(0).map(() => Math.random() * -100);
-    });
-
-    const animate = () => {
-      ctx.fillStyle = "rgba(10, 8, 18, 0.06)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < drops.length; i++) {
-        const char = chars[Math.floor(Math.random() * chars.length)];
-        const y = drops[i] * fontSize;
-        
-        // Gradient from cyan to magenta based on progress
-        const progress = (y % canvas.height) / canvas.height;
-        const r = Math.floor(0 + (255 - 0) * progress);
-        const g = Math.floor(255 + (0 - 255) * progress);
-        const b = Math.floor(255 + (255 - 255) * progress);
-
-        const opacity = 0.25 + Math.random() * 0.45;
-        ctx.fillStyle = `rgba(${r},${g},${b},${opacity})`;
-        ctx.font = `${fontSize}px monospace`;
-        ctx.fillText(char, i * fontSize, y);
-
-        if (y > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-        drops[i] += 0.5 + Math.random() * 0.5;
-      }
-
-      animRef.current = requestAnimationFrame(animate);
-    };
-    animRef.current = requestAnimationFrame(animate);
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      cancelAnimationFrame(animRef.current);
-      window.removeEventListener("resize", resize);
+      clearInterval(interval);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.4 }}
+    <canvas 
+      ref={canvasRef} 
+      className="fixed inset-0 pointer-events-none opacity-20 z-0"
     />
   );
 };

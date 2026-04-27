@@ -1,7 +1,7 @@
 import { Smartphone, Globe, Server, HardDrive, Ban, Code2, Shield, Zap } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { Link } from "react-router-dom";
-import WorkflowNodesBackground from "@/components/backgrounds/WorkflowNodesBackground";
+import MatrixBackground from "@/components/backgrounds/MatrixBackground";
 
 const devCategories = [
   {
@@ -46,7 +46,7 @@ const Development = () => {
 
   return (
     <main ref={ref} className="pt-24 pb-16 relative">
-      <WorkflowNodesBackground />
+      <MatrixBackground />
       <div className="container mx-auto px-6 relative z-10">
         {/* Hero */}
         <div className="text-center mb-24 animate-scroll-fade">
