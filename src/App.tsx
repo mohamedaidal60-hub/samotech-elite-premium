@@ -21,7 +21,6 @@ import ClientDashboard from "./pages/ClientDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
-import Chatbot from "./components/Chatbot";
 
 const queryClient = new QueryClient();
 
@@ -49,7 +48,6 @@ const Shell = () => {
       </Routes>
       {!isAdmin && <Footer />}
       <WhatsAppFloat />
-      <Chatbot />
     </>
 
   );

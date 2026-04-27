@@ -61,12 +61,12 @@ const Services = () => {
               className="group relative h-full"
             >
               <Link to={s.link} className="block h-full animate-reveal" style={{ animationDelay: `${idx * 0.15}s` }}>
-                <div className="glass-card-glow p-8 rounded-[2rem] border-white/5 h-full flex flex-col group-hover:border-primary/40 transition-all duration-500 hover-tilt">
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
-                    <s.icon size={28} className="text-white" />
+                <div className="glass-card-glow p-8 rounded-[3rem] border-white/10 h-full flex flex-col group-hover:border-primary/50 transition-all duration-700 hover-tilt group-hover:shadow-[0_0_50px_-12px_rgba(134,63,255,0.3)] bg-black/20">
+                  <div className={`w-16 h-16 rounded-[1.5rem] bg-gradient-to-br ${s.color} flex items-center justify-center mb-8 shadow-2xl group-hover:scale-125 group-hover:rotate-6 transition-all duration-700`}>
+                    <s.icon size={32} className="text-white" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4 group-hover:text-primary transition-colors">{s.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-8 flex-grow">
+                  <h3 className="text-2xl font-black mb-4 group-hover:text-primary transition-colors text-white">{s.title}</h3>
+                  <p className="text-base text-white/60 leading-relaxed mb-8 flex-grow">
                     {s.desc}
                   </p>
                   <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primary">
