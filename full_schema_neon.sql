@@ -90,10 +90,10 @@ CREATE TABLE IF NOT EXISTS order_assets (
 
 -- 7. INITIAL DATA (Packs)
 INSERT INTO packs (name, description, category, features) VALUES 
-('Pack SamoTech', 'Le pack ultime pour lancer votre marque avec impact.', 'marketing', '["Meta Page Creation", "5000 Followers", "5000 Likes", "Logo Design", "Creative Video", "5 Days Sponsoring"]'),
-('Pack Visibilité', 'Maximisez votre portée sur les réseaux sociaux.', 'marketing', '["10 Days Sponsoring", "Audience Management", "3 Ad Videos"]'),
-('Pack SamoTech UGC', 'Puissance des créateurs de contenu.', 'marketing', '["UGC Videos", "Model Shooting", "Market Study Scripts", "Official US Ad Account"]'),
-('Pack Corporate Elite', 'Solution complète dev + marketing.', 'development', '["Premium Website", "Full SEO", "SamoTech Pack included", "1 Year Maintenance"]');
+('Pack Entreprise', 'Solution prestige pour une domination totale de votre secteur avec le meilleur rapport qualité-prix.', 'corporate', '["Branding & Identity", "Detailed Charter", "Website & App", "Meta Certification", "Community Management", "10 Posters", "3 Videos", "Ads Campaigns"]'),
+('Pack SamoTech Basic', 'Les essentiels pour lancer votre aventure digitale avec impact.', 'marketing', '["Logo & Identity", "Meta Account Creation", "Followers Boost", "2 Posters", "1 Video", "Ads Campaign"]'),
+('Pack Automation', 'Optimisez votre temps et vos profits.', 'automation', '["Process Audit", "CRM Integration", "Auto Invoicing", "Bot Qualification"]'),
+('Pack Branding Prestige', 'Donnez une âme et une voix à votre marque.', 'branding', '["Full Graphic Charter", "Storytelling", "Content Strategy", "Templates", "Shooting Direction"]');
 
 -- INDEXES
 CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);

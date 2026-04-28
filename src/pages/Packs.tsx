@@ -19,63 +19,39 @@ const Packs = () => {
 
   const packs = [
     {
-      id: "samotech",
-      title: t("pack.samotech.title"),
-      desc: t("pack.samotech.desc"),
+      id: "basic",
+      title: t("pack.basic.title"),
+      desc: t("pack.basic.desc"),
+      icon: Zap,
+      color: "from-blue-400 to-cyan-500",
+      features: [
+        t("pack.features.logo_basic"),
+        t("pack.features.meta_basic"),
+        "Augmentation des followers",
+        t("pack.features.posters_2"),
+        t("pack.features.video_1"),
+        t("pack.features.sponsoring_basic")
+      ],
+      popular: false
+    },
+    {
+      id: "enterprise",
+      title: t("pack.enterprise.title"),
+      desc: t("pack.enterprise.desc"),
       icon: Sparkles,
       color: "from-primary to-secondary",
       features: [
-        t("pack.features.meta"),
-        t("pack.features.followers"),
-        t("pack.features.likes"),
-        t("pack.features.logo"),
-        t("pack.features.poster"),
-        t("pack.features.video"),
-        t("pack.features.sponsoring")
+        t("pack.features.branding"),
+        t("pack.features.branding_detailed"),
+        t("pack.features.web_app"),
+        t("pack.features.meta_full"),
+        t("pack.features.followers_qualified"),
+        t("pack.features.community_management"),
+        t("pack.features.posters_10"),
+        t("pack.features.videos_3"),
+        t("pack.features.ads_campaign")
       ],
       popular: true
-    },
-    {
-      id: "visibility",
-      title: t("pack.visibility.title"),
-      desc: t("pack.visibility.desc"),
-      icon: Zap,
-      color: "from-blue-500 to-cyan-500",
-      features: [
-        t("pack.features.followers"),
-        t("pack.features.likes"),
-        t("pack.features.sponsoring"),
-        "Gestion d'audience avancée",
-        "3 Vidéos publicitaires"
-      ]
-    },
-    {
-      id: "expansion",
-      title: t("pack.expansion.title"),
-      desc: t("pack.expansion.desc"),
-      icon: Users,
-      color: "from-pink-500 to-rose-500",
-      features: [
-        t("pack.features.ugc"),
-        t("pack.features.us_account"),
-        "Scripts de vente psychologiques",
-        "Étude de marché concurrentielle",
-        "Accompagnement Scale"
-      ]
-    },
-    {
-      id: "corporate",
-      title: t("pack.corporate.title"),
-      desc: t("pack.corporate.desc"),
-      icon: Globe,
-      color: "from-indigo-500 to-purple-500",
-      features: [
-        t("pack.features.website"),
-        t("pack.features.seo"),
-        t("pack.samotech.title") + " Inclus",
-        "Maintenance annuelle offerte",
-        "Emails professionnels illimités"
-      ]
     },
     {
       id: "automation",
@@ -92,7 +68,7 @@ const Packs = () => {
       ]
     },
     {
-      id: "branding",
+      id: "branding_prestige",
       title: "Pack Branding Prestige",
       desc: "Donnez une âme et une voix à votre marque.",
       icon: Layout,
